@@ -1,10 +1,21 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+// In App.js in a new project
 
-export default function index() {
+import * as React from 'react';
+import { View, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from '../screens/LoginScreen' ;
+import SignupScreen from "../screens/SignupScreen";
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
   return (
-    <View>
-      <Text>index</Text>
-    </View>
-  )
+    
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="SignupScreen" component={SignupScreen} />
+      </Stack.Navigator>
+   
+  );
 }
