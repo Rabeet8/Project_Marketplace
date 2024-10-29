@@ -1,30 +1,37 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Implement login logic here
-    console.log("Logging in with:", email, password);
+    // Implement login logic
+    console.log('Logging in with:', mobile, password);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <View style={styles.tabContainer}>
+        <TouchableOpacity style={[styles.tab, styles.activeTab]}>
+          <Text style={[styles.tabText, styles.activeTabText]}>LOGIN</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={() => navigation.navigate('SignupScreen')}
+        >
+          <Text style={styles.tabText}>SIGN UP</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.title}>Welcome back</Text>
+      <Text style={styles.subtitle}>Sign in with your account</Text>
+
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Mobile Number"
+        value={mobile}
+        onChangeText={setMobile}
       />
       <TextInput
         style={styles.input}
@@ -33,10 +40,22 @@ export default function LoginScreen({ navigation }) {
         secureTextEntry
         onChangeText={setPassword}
       />
-      <Button title="Login" onPress={handleLogin} />
-      <TouchableOpacity onPress={() => navigation.navigate("SignupScreen")}>
-        <Text style={styles.link}>Don't have an account? Sign Up</Text>
+      <TouchableOpacity onPress={() => { /* Toggle password visibility */ }}>
+        <Text style={styles.showPassword}>Show</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <Text style={styles.loginButtonText}>LOGIN</Text>
+      </TouchableOpacity>
+
+      <View style={styles.footerLinks}>
+        <TouchableOpacity>
+          <Text style={styles.footerLinkText}>Login with email</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.footerLinkText}>Forgot your password?</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -44,25 +63,73 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     padding: 16,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginBottom: 24,
+  },
+  tab: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  activeTab: {
+    backgroundColor: '#00BFA6',
+  },
+  tabText: {
+    color: '#00BFA6',
+    fontWeight: 'bold',
+  },
+  activeTabText: {
+    color: '#fff',
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    textAlign: "center",
+    fontSize: 26,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
   },
   input: {
     height: 40,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
     borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
     marginBottom: 12,
-    paddingHorizontal: 8,
   },
-  link: {
+  showPassword: {
+    color: '#00BFA6',
+    textAlign: 'right',
+    marginBottom: 20,
+  },
+  loginButton: {
+    backgroundColor: '#00BFA6',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  footerLinks: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 16,
-    color: "blue",
-    textAlign: "center",
+  },
+  footerLinkText: {
+    color: '#00BFA6',
+    fontSize: 14,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -13,7 +13,21 @@ export default function SignUpScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={() => navigation.navigate('LoginScreen')}
+        >
+          <Text style={styles.tabText}>LOGIN</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.tab, styles.activeTab]}>
+          <Text style={[styles.tabText, styles.activeTabText]}>SIGN UP</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.title}>Create an account</Text>
+      <Text style={styles.subtitle}>Sign up to get started</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -34,10 +48,16 @@ export default function SignUpScreen({ navigation }) {
         secureTextEntry
         onChangeText={setConfirmPassword}
       />
-      <Button title="Sign Up" onPress={handleSignUp} />
-      <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-        <Text style={styles.link}>Already have an account? Login</Text>
+
+      <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+        <Text style={styles.signUpButtonText}>SIGN UP</Text>
       </TouchableOpacity>
+
+      <View style={styles.footerLinks}>
+        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+          <Text style={styles.footerLinkText}>Already have an account? Login</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -45,25 +65,68 @@ export default function SignUpScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginBottom: 24,
+  },
+  tab: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  activeTab: {
+    backgroundColor: '#00BFA6',
+  },
+  tabText: {
+    color: '#00BFA6',
+    fontWeight: 'bold',
+  },
+  activeTabText: {
+    color: '#fff',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 16,
     textAlign: 'center',
+    marginVertical: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
   },
   input: {
     height: 40,
     borderColor: '#ddd',
     borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
     marginBottom: 12,
-    paddingHorizontal: 8,
   },
-  link: {
+  signUpButton: {
+    backgroundColor: '#00BFA6',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  signUpButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  footerLinks: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 16,
-    color: 'blue',
-    textAlign: 'center',
+  },
+  footerLinkText: {
+    color: '#00BFA6',
+    fontSize: 14,
   },
 });
