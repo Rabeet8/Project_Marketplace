@@ -7,7 +7,10 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -21,7 +24,9 @@ export default function SignUpScreen({ navigation }) {
   };
 
   return (
+    <KeyboardAwareScrollView style={{display: 'flex', flex:1, height:'100%'}}>
     <SafeAreaView style={styles.container}>
+  
       <View style={styles.topSection}>
         {/* Logo Section */}
         <View style={styles.logoContainer}>
@@ -49,6 +54,7 @@ export default function SignUpScreen({ navigation }) {
       </View>
 
       {/* White rounded container */}
+       
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Create an account</Text>
         <Text style={styles.subtitle}>Sign up to get started</Text>
@@ -108,9 +114,13 @@ export default function SignUpScreen({ navigation }) {
               </Text>
             </TouchableOpacity>
           </View>
+        
         </View>
+        
       </View>
+      
     </SafeAreaView>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -163,7 +173,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingTop: 30,
