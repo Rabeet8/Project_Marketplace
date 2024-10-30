@@ -7,7 +7,11 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  Platform,
+  StatusBar
 } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 export default function LoginScreen({ navigation }) {
   const [mobile, setMobile] = useState("");
@@ -19,6 +23,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
+    
     <SafeAreaView style={styles.container}>
       <View style={styles.topSection}>
         {/* Logo Section */}
@@ -48,9 +53,9 @@ export default function LoginScreen({ navigation }) {
           </View>
         </View>
       </View>
-
       {/* White rounded container */}
       <View style={styles.contentContainer}>
+<KeyboardAwareScrollView contentContainerStyle={{ }}>
         <Text style={styles.title}>Welcome back</Text>
         <Text style={styles.subtitle}>Sign in with your account</Text>
 
@@ -100,6 +105,7 @@ export default function LoginScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
+      </KeyboardAwareScrollView>
       </View>
     </SafeAreaView>
   );
@@ -157,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingTop: 30,
+    paddingTop: 80,
   },
   title: {
     fontSize: 24,

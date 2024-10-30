@@ -24,7 +24,6 @@ export default function SignUpScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAwareScrollView style={{display: 'flex', flex:1, height:'100%'}}>
     <SafeAreaView style={styles.container}>
   
       <View style={styles.topSection}>
@@ -54,8 +53,9 @@ export default function SignUpScreen({ navigation }) {
       </View>
 
       {/* White rounded container */}
-       
+
       <View style={styles.contentContainer}>
+      <KeyboardAwareScrollView  contentContainerStyle={{autoscroll: true }} >
         <Text style={styles.title}>Create an account</Text>
         <Text style={styles.subtitle}>Sign up to get started</Text>
 
@@ -117,10 +117,9 @@ export default function SignUpScreen({ navigation }) {
         
         </View>
         
+      </KeyboardAwareScrollView>
       </View>
-      
     </SafeAreaView>
-    </KeyboardAwareScrollView>
   );
 }
 
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingTop: 30,
+    paddingTop: 80,
   },
   title: {
     fontSize: 24,
