@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 
 export default function LoginScreen({ navigation }) {
-  const [mobile, setMobile] = useState('');
-  const [password, setPassword] = useState('');
+  const [mobile, setMobile] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     // Implement login logic
-    console.log('Logging in with:', mobile, password);
+    console.log("Logging in with:", mobile, password);
   };
 
   return (
@@ -18,7 +25,7 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.tab}
-          onPress={() => navigation.navigate('SignupScreen')}
+          onPress={() => navigation.navigate("SignupScreen")}
         >
           <Text style={styles.tabText}>SIGN UP</Text>
         </TouchableOpacity>
@@ -40,12 +47,22 @@ export default function LoginScreen({ navigation }) {
         secureTextEntry
         onChangeText={setPassword}
       />
-      <TouchableOpacity onPress={() => { /* Toggle password visibility */ }}>
+      <TouchableOpacity
+        onPress={() => {
+          /* Toggle password visibility */
+        }}
+      >
         <Text style={styles.showPassword}>Show</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>LOGIN</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Text style={styles.loginButtonText}>HOME</Text>
       </TouchableOpacity>
 
       <View style={styles.footerLinks}>
@@ -64,12 +81,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
   },
   tabContainer: {
-    flexDirection: 'row',
-    alignSelf: 'center',
+    flexDirection: "row",
+    alignSelf: "center",
     marginBottom: 24,
   },
   tab: {
@@ -78,58 +95,59 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   activeTab: {
-    backgroundColor: '#00BFA6',
+    backgroundColor: "#00BFA6",
   },
   tabText: {
-    color: '#00BFA6',
-    fontWeight: 'bold',
+    color: "#00BFA6",
+    fontWeight: "bold",
   },
   activeTabText: {
-    color: '#fff',
+    color: "#fff",
   },
   title: {
     fontSize: 26,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginVertical: 12,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginBottom: 24,
   },
   input: {
     height: 40,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 12,
   },
   showPassword: {
-    color: '#00BFA6',
-    textAlign: 'right',
+    color: "#00BFA6",
+    textAlign: "right",
     marginBottom: 20,
   },
   loginButton: {
-    backgroundColor: '#00BFA6',
+    backgroundColor: "#00BFA6",
     paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
+    marginBottom: 16,
   },
   loginButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
   },
   footerLinks: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 16,
   },
   footerLinkText: {
-    color: '#00BFA6',
+    color: "#00BFA6",
     fontSize: 14,
   },
 });
