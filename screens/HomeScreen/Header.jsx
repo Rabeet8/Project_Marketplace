@@ -5,9 +5,9 @@ import { Ionicons } from "@expo/vector-icons";
 const Header = () => {
   return (
     <View style={styles.header}>
-      <Ionicons name="menu" size={24} color="#00BFA6" />
+      <Ionicons name="menu" size={24} color="#0D9DA6" />
       <Text style={styles.headerTitle}>Home</Text>
-      <Ionicons name="person-outline" size={24} color="#00BFA6" />
+      <Ionicons name="person-outline" size={24} color="#0D9DA6" />
     </View>
   );
 };
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#00BFA6",
+    color: "#0D9DA6",
   },
 });
 
