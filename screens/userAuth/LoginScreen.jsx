@@ -125,8 +125,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
   },
   tabsOuterContainer: {
     paddingHorizontal: 20,
