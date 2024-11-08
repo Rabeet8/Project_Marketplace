@@ -96,6 +96,8 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.loginButtonText}>HOME</Text>
           </TouchableOpacity>
 
+         
+
           <View style={styles.footerLinks}>
             <TouchableOpacity>
               <Text style={styles.footerLinkText}>Login with email</Text>
