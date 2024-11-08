@@ -13,6 +13,7 @@ import PostDetails from "@/screens/PostScreens/PostDetails";
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LoginScreen from "../screens/userAuth/LoginScreen";
 import SignupScreen from "../screens/userAuth/SignupScreen";
+import ProductListingScreen from "../screens/ProductListingsScreens/ProductListingScreen"
 
 SplashScreen.preventAutoHideAsync();
 
@@ -61,6 +62,11 @@ export default function App() {
       <Stack.Screen
         name="PostDetails"
         component={PostDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductListingScreen"
+        component={ProductListingScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
