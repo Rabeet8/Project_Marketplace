@@ -8,10 +8,9 @@ import {
   SafeAreaView,
   Image,
   Platform,
-  StatusBar
+  StatusBar,
 } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function LoginScreen({ navigation }) {
   const [mobile, setMobile] = useState("");
@@ -23,7 +22,6 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    
     <SafeAreaView style={styles.container}>
       <View style={styles.topSection}>
         {/* Logo Section */}
@@ -55,57 +53,56 @@ export default function LoginScreen({ navigation }) {
       </View>
       {/* White rounded container */}
       <View style={styles.contentContainer}>
-<KeyboardAwareScrollView contentContainerStyle={{ }}>
-        <Text style={styles.title}>Welcome back</Text>
-        <Text style={styles.subtitle}>Sign in with your account</Text>
+        <KeyboardAwareScrollView contentContainerStyle={{}}>
+          <Text style={styles.title}>Welcome back</Text>
+          <Text style={styles.subtitle}>Sign in with your account</Text>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Your Email"
-            value={mobile}
-            onChangeText={setMobile}
-            keyboardType="email-address"
-            placeholderTextColor="#999"
-          />
-
-          <View style={styles.passwordContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
-              style={[styles.input, styles.passwordInput]}
-              placeholder="Password"
-              value={password}
-              secureTextEntry={!showPassword}
-              onChangeText={setPassword}
+              style={styles.input}
+              placeholder="Enter Your Email"
+              value={mobile}
+              onChangeText={setMobile}
+              keyboardType="email-address"
               placeholderTextColor="#999"
             />
+
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="Password"
+                value={password}
+                secureTextEntry={!showPassword}
+                onChangeText={setPassword}
+                placeholderTextColor="#999"
+              />
+              <TouchableOpacity
+                style={styles.showPasswordButton}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Text style={styles.showPasswordText}>Show</Text>
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
-              style={styles.showPasswordButton}
-              onPress={() => setShowPassword(!showPassword)}
+              style={
+                styles.loginButton
+              } /*onPress={handleLogin} will apply this once login is implemented*/
+              onPress={() => navigation.navigate("Home")}
             >
-              <Text style={styles.showPasswordText}>Show</Text>
+              <Text style={styles.loginButtonText}>LOGIN</Text>
             </TouchableOpacity>
-          </View>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>LOGIN</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={() => navigation.navigate("Home")}
-          >
-            <Text style={styles.loginButtonText}>HOME</Text>
-          </TouchableOpacity>
-
-          <View style={styles.footerLinks}>
-            <TouchableOpacity>
-              <Text style={styles.footerLinkText}>Login with email</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.footerLinkText}>Forgot your password?</Text>
-            </TouchableOpacity>
+            <View style={styles.footerLinks}>
+              <TouchableOpacity>
+                <Text style={styles.footerLinkText}>Login with email</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.footerLinkText}>Forgot your password?</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView>
       </View>
     </SafeAreaView>
   );
