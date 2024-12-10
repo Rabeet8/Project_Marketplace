@@ -1,5 +1,3 @@
-// In App.js in a new project
-
 import * as React from "react";
 import { View, Text, SafeAreaView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -43,6 +41,7 @@ export default function App() {
     // <View>
     //   <HomeScreen />
     // </View>
+    <NavigationContainer>
     <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="LoginScreen"
@@ -70,5 +69,7 @@ export default function App() {
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
+    </NavigationContainer>
+
   );
 }
