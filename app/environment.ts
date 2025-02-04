@@ -1,0 +1,1 @@
+const BASE_URL = 'https://4cb0-2400-adc1-112-2f00-8d-2355-fd50-892b.ngrok-free.app/'

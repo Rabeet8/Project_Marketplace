@@ -8,18 +8,26 @@ import {
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
-
 const Categories = () => {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const categories = [
-    "All",
-    "Laptops",
-    "Mobiles",
-    "Devices",
-    "Gadgets",
-    "Accessories",
+    { id: 'All', name: 'All' },
+    { id: 1, name: 'Laptops' },
+    { id: 2, name: 'Mobiles' },
+    { id: 3, name: 'Devices' },
+    { id: 4, name: 'Gadgets' },
+    { id: 5, name: 'Accessories' },
   ];
+
+  const handleCategoryPress = (category) => {
+    if (category === 'All') {
+      navigation.navigate("ProductListingScreen", { category });
+    } else {
+      // Handle other categories if needed
+      console.log(`Selected category: ${category}`);
+    }
+  };
 
   return (
     <View style={styles.categoriesContainer}>
@@ -28,9 +36,9 @@ const Categories = () => {
           <TouchableOpacity
             key={index}
             style={styles.categoryButton}
-            onPress={() => navigation.navigate("ProductListingScreen")}
+            onPress={() => handleCategoryPress(category.id)}
           >
-            <Text style={styles.categoryText}>{category}</Text>
+            <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>

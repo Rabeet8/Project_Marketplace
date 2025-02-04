@@ -1,18 +1,16 @@
 import * as React from "react";
-import { View, Text, SafeAreaView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import Fonts from "@/constants/Fonts";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-// import OnBoardingScreen1 from "../screens/OnBoardingScreens/OnBoardingScreen1";
 import PostDetails from "@/screens/PostScreens/PostDetails";
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LoginScreen from "../screens/userAuth/LoginScreen";
 import SignupScreen from "../screens/userAuth/SignupScreen";
-import ProductListingScreen from "../screens/ProductListingsScreens/ProductListingScreen"
-import Additem from "../screens/CreateAds/Additem"
+import AdsListings from "../screens/ProductListingsScreens/AdsListings";
+import Additem from "../screens/CreateAds/Additem";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,43 +37,39 @@ export default function App() {
   }
 
   return (
-    // <View>
-    //   <HomeScreen />
-    // </View>
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Additem">
-      <Stack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SignupScreen"
-        component={SignupScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="PostDetails"
-        component={PostDetails}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ProductListingScreen"
-        component={ProductListingScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Additem"
-        component={Additem}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="LoginScreen"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SignupScreen"
+          component={SignupScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PostDetails"
+          component={PostDetails}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProductListingScreen"
+          component={AdsListings}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Additem"
+          component={Additem}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
-
   );
 }
