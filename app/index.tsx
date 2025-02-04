@@ -12,6 +12,7 @@ import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LoginScreen from "../screens/userAuth/LoginScreen";
 import SignupScreen from "../screens/userAuth/SignupScreen";
 import ProductListingScreen from "../screens/ProductListingsScreens/ProductListingScreen"
+import Additem from "../screens/CreateAds/Additem"
 
 SplashScreen.preventAutoHideAsync();
 
@@ -42,7 +43,7 @@ export default function App() {
     //   <HomeScreen />
     // </View>
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="Additem">
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
@@ -66,6 +67,11 @@ export default function App() {
       <Stack.Screen
         name="ProductListingScreen"
         component={ProductListingScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Additem"
+        component={Additem}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
