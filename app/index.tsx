@@ -11,6 +11,9 @@ import LoginScreen from "../screens/userAuth/LoginScreen";
 import SignupScreen from "../screens/userAuth/SignupScreen";
 import AdsListings from "../screens/ProductListingsScreens/AdsListings";
 import Additem from "../screens/CreateAds/Additem";
+import ProductListingScreen from "../screens/ProductListingsScreens/AdsListings";
+import User from "../screens/UserScreens/User"
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -70,6 +73,43 @@ export default function App() {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
+    <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignupScreen"
+        component={SignupScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PostDetails"
+        component={PostDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductListingScreen"
+        component={ProductListingScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Additem"
+        component={Additem}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="User"
+        component={User}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
     </NavigationContainer>
   );
 }

@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Add this import
 
 const BottomNavigation = () => {
+  const navigation = useNavigation(); // Add this hook
+
   return (
     <View style={styles.container}>
       <View style={styles.navigationBar}>
@@ -49,7 +52,7 @@ const BottomNavigation = () => {
       {/* Floating Action Button */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => console.log('Add pressed')}
+        onPress={() => navigation.navigate('Additem')} // Modified this line
         activeOpacity={0.8}
       >
         <View style={styles.fabIconContainer}>

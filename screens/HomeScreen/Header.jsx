@@ -1,13 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
 
 const Header = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.header}>
       <Ionicons name="menu" size={24} color="#0D9DA6" />
       <Text style={styles.headerTitle}>Home</Text>
-      <Ionicons name="person-outline" size={24} color="#0D9DA6" />
+      <TouchableOpacity onPress={() => navigation.navigate('User')}>
+        <Ionicons name="person-outline" size={24} color="#0D9DA6" />
+      </TouchableOpacity>
     </View>
   );
 };
