@@ -9,95 +9,62 @@ import {
   Dimensions,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import block from "../PostScreens/PostDetails";
 import { useNavigation } from "@react-navigation/native";
+import adsData from "../../src/data/adsdata"; // Import ads data
+import adsAIData from "../../src/data/adsAiData"; // Import AI ads data
+
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.75;
 
 const ProductList = () => {
-  const products = [
-    {
-      id: 1,
-      imageUrl: "https://example.com/asus.jpg",
-      title: "Iphone 15 pro ",
-      price: 200000,
-      location: "Rawalpindi",
-      timeAgo: "1 day ago",
-      isFeatured: true,
-    },
-    {
-      id: 2,
-      imageUrl: "https://example.com/hairstyle.jpg",
-      title: "Macbook",
-      price: 4500,
-      location: "Faisalabad",
-      timeAgo: "5 hrs ago",
-      isFeatured: true,
-    },
-    {
-      id: 3,
-      imageUrl: "https://example.com/product3.jpg",
-      title: "Apple headphones",
-      price: 15000,
-      location: "Lahore",
-      timeAgo: "2 hrs ago",
-      isFeatured: true,
-    },
-  ];
-
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.scrollContainer}
     >
-      {products.map((product) => (
-        <ProductCard key={product.id} {...product} />
+      {adsData.map((ad) => (
+        <ProductCard key={ad.img_id} ad={ad} />
       ))}
     </ScrollView>
   );
 };
 
 const ProductCard = ({
-  imageUrl,
-  title,
-  price,
-  location,
-  timeAgo,
-  isFeatured = false,
+  ad,
   isFavorite = false,
 }) => {
   const navigation = useNavigation();
+
+  const handleAdPress = (ad) => {
+    const aiData = adsAIData.find(ai => ai.ad_id === ad.ad_id);
+    console.log('AI Data:', aiData); // Add logging to verify the AI data
+    navigation.navigate('PostDetails', { ad, aiData });
+  };
+
   return (
     <View style={styles.card}>
       <TouchableOpacity
         style={styles.imageContainer}
-        onPress={() => navigation.navigate("PostDetails")}
+        onPress={() => handleAdPress(ad)}
       >
-        <Image source={block} style={styles.image} resizeMode="cover" />
-        {isFeatured && (
+        <Image source={{ uri: "../../assets/images/block.jpg" }} style={styles.image} resizeMode="cover" />
+        {ad.isFeatured && (
           <View style={styles.featuredBadge}>
             <Text style={styles.featuredText}>Featured</Text>
           </View>
         )}
-        <TouchableOpacity style={styles.heartButton} onPress={() => {}}>
-          <FontAwesome
-            name={isFavorite ? "heart" : "heart-o"}
-            size={24}
-            color={isFavorite ? "#ff4444" : "white"}
-          />
-        </TouchableOpacity>
       </TouchableOpacity>
 
       <View style={styles.contentContainer}>
         <Text style={styles.title} numberOfLines={1}>
-          {title}
+          {ad.title}
         </Text>
-        <Text style={styles.price}>Rs. {price.toLocaleString()}</Text>
+        <Text style={styles.price}>Rs. {ad.price.toLocaleString()}</Text>
 
         <View style={styles.footer}>
-          <Text style={styles.location}>{location}</Text>
-          <Text style={styles.timeAgo}>{timeAgo}</Text>
+          <Text style={styles.location}>{ad.city}</Text>
+          <Text style={styles.timeAgo}>{ad.timestamp}</Text>
         </View>
       </View>
     </View>
