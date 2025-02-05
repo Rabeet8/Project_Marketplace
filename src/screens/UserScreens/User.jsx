@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
-import BottomNavigation from '../HomeScreen/BottomNavigator';
+import BottomNavigation from '../../components/common/BottomNavigator';
 
 const PRIMARY_COLOR = '#0D2C54';
 
@@ -9,7 +9,7 @@ const UserProfile = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
         <Image
-          source={require('../../assets/images/profile.png')}
+          source={require('../../../assets/images/profile.png')}
           style={styles.profileImage}
         />
         <Text style={styles.userName}>User Name</Text>

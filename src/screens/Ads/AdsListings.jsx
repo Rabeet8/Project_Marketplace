@@ -1,21 +1,28 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import adsData from '../../src/data/adsdata';
-import adsAIData from '../../src/data/adsAiData';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import adsData from '../../data/adsdata';
+import adsAIData from '../../data/adsAiData';
 
 const AdsListings = () => {
   const [ads, setAds] = useState([]);
   const navigation = useNavigation();
+  const route = useRoute();
+  const { category } = route.params;
 
   useEffect(() => {
-    setAds(adsData);
-  }, []);
+    if (category === 'All') {
+      setAds(adsData);
+    } else {
+      const filteredAds = adsData.filter(ad => ad.category_id === category);
+      setAds(filteredAds);
+    }
+  }, [category]);
 
   const handleAdPress = (ad) => {
     const aiData = adsAIData.find(ai => ai.ad_id === ad.ad_id);
     console.log('AI Data:', aiData); // Add logging to verify the AI data
-    navigation.navigate('PostDetails', { ad, aiData });
+    navigation.navigate('SingleAdDetails', { ad, aiData });
   };
 
   return (
@@ -25,7 +32,7 @@ const AdsListings = () => {
           <View style={styles.cardContainer}>
             <View style={styles.imageContainer}>
               <Image
-                source={require('../../assets/images/block.jpg')} // Replace with your image path
+                source={require('../../../assets/images/block.jpg')} // Replace with your image path
                 style={styles.productImage}
               />
               <TouchableOpacity style={styles.menuButton}>

@@ -8,11 +8,11 @@ import {
   Dimensions,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import block from "../../assets/images/block.jpg";
-import logo1 from "../../assets/images/logo1.png";
-import aiLogo from "../../assets/images/ai-logo.png";
+import block from "../../../assets/images/block.jpg";
+import logo1 from "../../../assets/images/logo1.png";
+import aiLogo from "../../../assets/images/ai-logo.png";
 
-const PostDetails = () => {
+const SingleAdDetails = () => {
   const route = useRoute();
   const { ad, aiData } = route.params;
 
@@ -272,4 +272,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostDetails;
+export default SingleAdDetails;

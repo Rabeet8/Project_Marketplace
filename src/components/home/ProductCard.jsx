@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import adsData from "../../src/data/adsdata"; // Import ads data
-import adsAIData from "../../src/data/adsAiData"; // Import AI ads data
+import adsData from "../../data/adsdata"; // Import ads data
+import adsAIData from "../../data/adsAiData"; // Import AI ads data
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.75;
@@ -39,7 +39,7 @@ const ProductCard = ({
   const handleAdPress = (ad) => {
     const aiData = adsAIData.find(ai => ai.ad_id === ad.ad_id);
     console.log('AI Data:', aiData); // Add logging to verify the AI data
-    navigation.navigate('PostDetails', { ad, aiData });
+    navigation.navigate('SingleAdDetails', { ad, aiData });
   };
 
   return (
@@ -48,7 +48,7 @@ const ProductCard = ({
         style={styles.imageContainer}
         onPress={() => handleAdPress(ad)}
       >
-        <Image source={require('../../assets/images/block.jpg')} style={styles.image} resizeMode="cover" />
+        <Image source={require('../../../assets/images/block.jpg')} style={styles.image} resizeMode="cover" />
         {ad.isFeatured && (
           <View style={styles.featuredBadge}>
             <Text style={styles.featuredText}>Featured</Text>

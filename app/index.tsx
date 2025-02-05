@@ -5,14 +5,13 @@ import { useFonts } from "expo-font";
 import Fonts from "@/constants/Fonts";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import PostDetails from "@/screens/PostScreens/PostDetails";
-import HomeScreen from "../screens/HomeScreen/HomeScreen";
-import LoginScreen from "../screens/userAuth/LoginScreen";
-import SignupScreen from "../screens/userAuth/SignupScreen";
-import AdsListings from "../screens/ProductListingsScreens/AdsListings";
-import Additem from "../screens/CreateAds/Additem";
-import ProductListingScreen from "../screens/ProductListingsScreens/AdsListings";
-import User from "../screens/UserScreens/User"
+import SingleAdDetails from "../src/screens/Ads/SingleAdDetails";
+import HomeScreen from '../src/screens/HomeScreen'
+import LoginScreen from "../src/screens/LoginScreen";
+import SignupScreen from "../src/screens/SignupScreen";
+import AdsListings from "../src/screens/Ads/AdsListings";
+import AdUploadScreen from "../src/screens/Ads/AdUploadScreen";
+import User from "../src/screens/UserScreens/User"
 
 
 SplashScreen.preventAutoHideAsync();
@@ -41,7 +40,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="LoginScreen"
           component={LoginScreen}
@@ -58,18 +57,18 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="PostDetails"
-          component={PostDetails}
+          name="SingleAdDetails"
+          component={SingleAdDetails}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="ProductListingScreen"
+          name="AdsListings"
           component={AdsListings}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Additem"
-          component={Additem}
+          name="AdUploadScreen"
+          component={AdUploadScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

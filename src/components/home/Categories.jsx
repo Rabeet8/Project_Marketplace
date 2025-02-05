@@ -15,18 +15,12 @@ const Categories = () => {
     { id: 'All', name: 'All' },
     { id: 1, name: 'Laptops' },
     { id: 2, name: 'Mobiles' },
-    { id: 3, name: 'Devices' },
-    { id: 4, name: 'Gadgets' },
-    { id: 5, name: 'Accessories' },
+    { id: 3, name: 'Gadgets' },
+    { id: 6, name: 'Wearables' }
   ];
 
   const handleCategoryPress = (category) => {
-    if (category === 'All') {
-      navigation.navigate("ProductListingScreen", { category });
-    } else {
-      // Handle other categories if needed
-      console.log(`Selected category: ${category}`);
-    }
+    navigation.navigate("AdsListings", { category });
   };
 
   return (

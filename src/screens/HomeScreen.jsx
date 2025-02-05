@@ -1,12 +1,12 @@
 import React from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import Header from "./Header";
-import Categories from "./Categories";
-import SearchBar from "./SearchBar";
-import CategoryGrid from "./CategoryGrid";
-import ProductCard from "./ProductCard";
-import MainProduct from "./MainProduct";
-import BottomNavigationBar from "./BottomNavigator";
+import Header from "../components/common/Header"
+import Categories from "../components/home/Categories";
+import SearchBar from "../components/home/SearchBar";
+import CategoryGrid from "../components/home/CategoryGrid";
+import ProductCard from "../components/home/ProductCard";
+import MainProduct from "../components/home/MainProduct";
+import BottomNavigationBar from "../components/common/BottomNavigator";
 
 const HomeScreen = () => {
   const DATA = [
