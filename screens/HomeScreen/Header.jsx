@@ -8,10 +8,10 @@ const Header = () => {
 
   return (
     <View style={styles.header}>
-      <Ionicons name="menu" size={24} color="#0D9DA6" />
+      <Ionicons name="menu" size={24} color="#0D2C54" />
       <Text style={styles.headerTitle}>Home</Text>
       <TouchableOpacity onPress={() => navigation.navigate('User')}>
-        <Ionicons name="person-outline" size={24} color="#0D9DA6" />
+        <Ionicons name="person-outline" size={24} color="#0D2C54" />
       </TouchableOpacity>
     </View>
   );
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#0D9DA6",
+    color: "#0D2C54",
   },
 });
 

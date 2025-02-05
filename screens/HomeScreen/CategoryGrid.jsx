@@ -28,7 +28,7 @@ const CategoryGrid = () => {
       contentContainerStyle={styles.gridContainer}
       renderItem={({ item }) => (
         <TouchableOpacity style={styles.card}>
-          <Ionicons name={item.icon} size={30} color="#0D9DA6" />
+          <Ionicons name={item.icon} size={30} color="#0D2C54" />
           <Text style={styles.cardText}>{item.name}</Text>
         </TouchableOpacity>
       )}

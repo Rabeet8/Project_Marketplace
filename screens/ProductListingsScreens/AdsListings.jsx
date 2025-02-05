@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#0D9DA6',
+    color: '#0D2C54',
     marginBottom: 8,
   },
   tagContainer: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   serviceTag: {
-    backgroundColor: '#0D9DA6',
+    backgroundColor: '#0D2C54',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 16,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   featuredButton: {
-    backgroundColor: '#0D9DA6',
+    backgroundColor: '#0D2C54',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 4,

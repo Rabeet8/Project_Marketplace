@@ -8,7 +8,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker'; // Add this import
 
-const PRIMARY_COLOR = '#0D9DA6';
+const PRIMARY_COLOR = '#0D2C54';
 const { width, height } = Dimensions.get('window');
 
 const AnimatedInput = ({ style, onFocus, onBlur, ...props }) => {

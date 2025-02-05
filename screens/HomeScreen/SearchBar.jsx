@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 const SearchBar = () => {
     return (
         <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="#00BFA6" style={styles.icon} />
+            <Ionicons name="search" size={20} color="#0D2C54" style={styles.icon} />
             <TextInput
                 style={styles.input}
                 placeholder="Search"

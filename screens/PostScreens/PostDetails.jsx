@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   activeTab: {
-    backgroundColor: "#0D9DA6",
-    borderColor: "#0D9DA6",
+    backgroundColor: "#0D2C54",
+    borderColor: "#0D2C54",
   },
   tabText: {
     fontSize: 16,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   serviceBadge: {
-    backgroundColor: "#0D9DA6",
+    backgroundColor: "#0D2C54",
     color: "#fff",
     paddingVertical: 2,
     paddingHorizontal: 8,
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#0D9DA6",
+    color: "#0D2C54",
     marginVertical: 10,
   },
   buttonContainer: {
@@ -258,8 +258,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   callButton: {
-    backgroundColor: "#0D9DA6",
-    borderColor: "#0D9DA6",
+    backgroundColor: "#0D2C54",
+    borderColor: "#0D2C54",
   },
   buttonText: {
     fontSize: 14,

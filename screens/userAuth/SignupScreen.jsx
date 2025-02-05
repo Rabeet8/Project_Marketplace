@@ -126,7 +126,7 @@ export default function SignUpScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D9DA6",
+    backgroundColor: "#0D2C54",
   },
   topSection: {
     paddingTop: 20,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
   },
   activeTabText: {
-    color: "#0D9DA6",
+    color: "#0D2C54",
     fontSize: 16,
     fontWeight: "600",
     backgroundColor: "#FFFFFF",
@@ -215,12 +215,12 @@ const styles = StyleSheet.create({
     top: 12,
   },
   showPasswordText: {
-    color: "#0D9DA6",
+    color: "#0D2C54",
     fontSize: 14,
     fontWeight: "500",
   },
   signUpButton: {
-    backgroundColor: "#0D9DA6",
+    backgroundColor: "#0D2C54",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   footerLinkText: {
-    color: "#0D9DA6",
+    color: "#0D2C54",
     fontSize: 14,
   },
 });

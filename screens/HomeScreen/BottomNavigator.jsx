@@ -1,17 +1,19 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native'; // Add this import
+import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BottomNavigation = () => {
-  const navigation = useNavigation(); // Add this hook
-
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View style={styles.navigationBar}>
         <TouchableOpacity 
           style={styles.navItem} 
-          onPress={() => console.log('Home pressed')}
+          onPress={() => navigation.navigate('Home')}
         >
           <MaterialCommunityIcons name="home-outline" size={24} color="#666" />
           <Text style={styles.navText}>Home</Text>
@@ -19,17 +21,17 @@ const BottomNavigation = () => {
 
         <TouchableOpacity 
           style={styles.navItem} 
-          onPress={() => console.log('My Ads pressed')}
+          onPress={() => navigation.navigate('Search')}
         >
           <MaterialCommunityIcons name="text-box-outline" size={24} color="#666" />
-          <Text style={styles.navText}>My Ads</Text>
+          <Text style={styles.navText}>Search</Text>
         </TouchableOpacity>
 
         <View style={styles.fabSpacer} />
 
         <TouchableOpacity 
           style={styles.navItem} 
-          onPress={() => console.log('Chat pressed')}
+          onPress={() => navigation.navigate('Notifications')}
         >
           <View style={styles.chatIconContainer}>
             <MaterialCommunityIcons name="message-outline" size={24} color="#666" />
@@ -37,22 +39,22 @@ const BottomNavigation = () => {
               <Text style={styles.badgeText}>2</Text>
             </View>
           </View>
-          <Text style={styles.navText}>Chat</Text>
+          <Text style={styles.navText}>Notifications</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={styles.navItem} 
-          onPress={() => console.log('More pressed')}
+          onPress={() => navigation.navigate('Profile')}
         >
           <MaterialCommunityIcons name="dots-horizontal" size={24} color="#666" />
-          <Text style={styles.navText}>More</Text>
+          <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>
       </View>
 
       {/* Floating Action Button */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => navigation.navigate('Additem')} // Modified this line
+        onPress={() => navigation.navigate('Additem')}
         activeOpacity={0.8}
       >
         <View style={styles.fabIconContainer}>
@@ -65,8 +67,13 @@ const BottomNavigation = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
-    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'transparent',
+    height: 'auto',
+    width: Dimensions.get('window').width,
   },
   navigationBar: {
     flexDirection: 'row',
@@ -109,13 +116,14 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    bottom: 20,
+    bottom: Platform.OS === 'ios' ? 20 : 12,
     left: '50%',
     marginLeft: -28,
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#0D9DA6',
+    backgroundColor: '#0D2C54',
+    zIndex: 1,
     ...Platform.select({
       ios: {
         shadowColor: '#000',

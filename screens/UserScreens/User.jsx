@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
 import BottomNavigation from '../HomeScreen/BottomNavigator';
 
-const PRIMARY_COLOR = '#0D9DA6';
+const PRIMARY_COLOR = '#0D2C54';
 
 const UserProfile = () => {
   return (

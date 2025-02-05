@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#0D9DA6",
+    color: "#0D2C54",
   },
 });
 

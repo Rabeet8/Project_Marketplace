@@ -48,7 +48,7 @@ const ProductCard = ({
         style={styles.imageContainer}
         onPress={() => handleAdPress(ad)}
       >
-        <Image source={{ uri: "../../assets/images/block.jpg" }} style={styles.image} resizeMode="cover" />
+        <Image source={require('../../assets/images/block.jpg')} style={styles.image} resizeMode="cover" />
         {ad.isFeatured && (
           <View style={styles.featuredBadge}>
             <Text style={styles.featuredText}>Featured</Text>

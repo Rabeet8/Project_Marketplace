@@ -112,7 +112,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D9DA6", // Updated to specified color
+    backgroundColor: "#0D2C54", // Updated to specified color
   },
   topSection: {
     paddingTop: 20,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 22, // Slightly less than container for padding
   },
   activeTabText: {
-    color: "#0D9DA6",
+    color: "#0D2C54",
     fontSize: 16,
     fontWeight: "600",
     backgroundColor: "#FFFFFF",
@@ -201,12 +201,12 @@ const styles = StyleSheet.create({
     top: 12,
   },
   showPasswordText: {
-    color: "#0D9DA6",
+    color: "#0D2C54",
     fontSize: 14,
     fontWeight: "500",
   },
   loginButton: {
-    backgroundColor: "#0D9DA6",
+    backgroundColor: "#0D2C54",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   footerLinkText: {
-    color: "#0D9DA6",
+    color: "#0D2C54",
     fontSize: 14,
   },
 });

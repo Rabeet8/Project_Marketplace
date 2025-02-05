@@ -16,14 +16,13 @@ const HomeScreen = () => {
     { id: "4", component: <CategoryGrid /> },
     { id: "5", component: <ProductCard /> },
     { id: "6", component: <MainProduct /> },
-    { id: "7", component: <BottomNavigationBar /> },
-  ];
+  ]; // Removed BottomNavigationBar from DATA
 
   const renderItem = ({ item, index }) => (
     <View
       style={[
         styles.componentContainer,
-        index === DATA.length - 1 && styles.noMargin,
+        index === DATA.length - 1 && styles.lastItem, // Changed to lastItem for clarity
       ]}
     >
       {item.component}
@@ -31,27 +30,37 @@ const HomeScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-      />
+    <View style={styles.mainContainer}>
+      <View style={styles.contentContainer}>
+        <FlatList
+          data={DATA}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.flatListContent}
+        />
+      </View>
+      <BottomNavigationBar />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  contentContainer: {
+    flex: 1,
   },
   componentContainer: {
     marginBottom: 16,
   },
-  noMargin: {
-    marginBottom: 0,
+  lastItem: {
+    marginBottom: 80, // Add bottom margin to last item to prevent content from being hidden behind navigation
+  },
+  flatListContent: {
+    paddingBottom: 16, // Add padding to ensure proper spacing at the bottom
   },
 });
 
