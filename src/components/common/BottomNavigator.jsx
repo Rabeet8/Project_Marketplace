@@ -54,7 +54,7 @@ const BottomNavigation = () => {
       {/* Floating Action Button */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => navigation.navigate('Additem')}
+        onPress={() => navigation.navigate('AdUploadScreen')}
         activeOpacity={0.8}
       >
         <View style={styles.fabIconContainer}>
