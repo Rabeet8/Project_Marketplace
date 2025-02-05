@@ -72,44 +72,12 @@ export default function App() {
           component={Additem}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="User"
+          component={User}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
-    <Stack.Navigator initialRouteName="LoginScreen">
-      <Stack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SignupScreen"
-        component={SignupScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="PostDetails"
-        component={PostDetails}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ProductListingScreen"
-        component={ProductListingScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Additem"
-        component={Additem}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="User"
-        component={User}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
     </NavigationContainer>
   );
 }
