@@ -30,7 +30,7 @@ const BottomNavigation = () => {
         <View style={styles.fabSpacer} />
 
         <TouchableOpacity 
-          style={[styles.navItem, styles.rightSideItem]} 
+          style={styles.navItem} 
           onPress={() => navigation.navigate('Notifications')}
         >
           <View style={styles.chatIconContainer}>
@@ -43,7 +43,7 @@ const BottomNavigation = () => {
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={[styles.navItem, styles.rightSideItem]} 
+          style={styles.navItem} 
           onPress={() => navigation.navigate('Profile')}
         >
           <MaterialCommunityIcons name="dots-horizontal" size={24} color="#666" />
@@ -54,7 +54,7 @@ const BottomNavigation = () => {
       {/* Floating Action Button */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => navigation.navigate('AdUploadScreen')}
+        onPress={() => navigation.navigate('Additem')}
         activeOpacity={0.8}
       >
         <View style={styles.fabIconContainer}>
@@ -104,9 +104,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
     minWidth: 64,
-  },
-  rightSideItem: {
-    paddingHorizontal: 7,
   },
   navText: {
     fontSize: 12,

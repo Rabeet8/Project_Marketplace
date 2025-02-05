@@ -1,12 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Image, SafeAreaView, TouchableOpacity } from 'react-native';
 import BottomNavigation from '../../components/common/BottomNavigator';
 
 const PRIMARY_COLOR = '#0D2C54';
 
 const UserProfile = () => {
+  const handleLogout = () => {
+    // Add logout logic here
+    console.log('Logging out...');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.profileContainer}>
         <Image
           source={require('../../../assets/images/profile.png')}
@@ -30,9 +41,7 @@ const UserProfile = () => {
         </View>
       </View>
       
-      {/* <View style={styles.bottomNav}> */}
-        <BottomNavigation/>
-      {/* </View> */}
+      <BottomNavigation/>
     </SafeAreaView>
   );
 };
@@ -49,11 +58,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f4f4f4',
   },
+  header: {
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
   profileContainer: {
     flex: 1,
     backgroundColor: '#f4f4f4',
     alignItems: 'center',
     paddingVertical: 20,
+    marginTop: 20, // Added margin to move content down
   },
   profileImage: {
     width: 100,
@@ -107,7 +124,18 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
     alignItems: 'center'
-  }
+  },
+  logoutButton: {
+    backgroundColor: PRIMARY_COLOR,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });
 
 export default UserProfile;

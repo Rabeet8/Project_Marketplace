@@ -3,10 +3,7 @@ import {
   View, Text, TextInput, StyleSheet, 
   ScrollView, TouchableOpacity, 
   Modal, Dimensions, Pressable,
-  Image, // Add this import
-  KeyboardAvoidingView, // Add this import
-  TouchableWithoutFeedback, // Add this import
-  Keyboard,Platform // Add this import
+  Image // Add this import
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker'; // Add this import
@@ -18,7 +15,10 @@ const AnimatedInput = ({ style, onFocus, onBlur, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View style={[styles.inputContainer, isFocused && styles.inputFocused]}>
+    <View style={[
+      styles.inputContainer, 
+      isFocused && styles.inputFocused
+    ]}>
       <TextInput
         {...props}
         style={[styles.input, style]}
@@ -30,9 +30,6 @@ const AnimatedInput = ({ style, onFocus, onBlur, ...props }) => {
           setIsFocused(false);
           onBlur && onBlur(e);
         }}
-        blurOnSubmit={false}
-        returnKeyType="next"
-        underlineColorAndroid="transparent"
       />
     </View>
   );
@@ -242,120 +239,119 @@ const CarSaleForm = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <KeyboardAvoidingView 
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
-    >
-      <ScrollView 
-        style={styles.container}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
-        nestedScrollEnabled={true}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <View style={[styles.formContainer, { paddingBottom: 50 }]}>
-          <Text style={styles.heading}>Add an item</Text>
-          <Text style={styles.label}>Title</Text>
-          <AnimatedInput
-            value={formData.title}
-            onChangeText={(text) => setFormData({ ...formData, title: text })}
-            placeholder="Car for Sale"
-            returnKeyType="next"
-          />
-          <Text style={styles.label}>Description</Text>
-          <AnimatedInput
-            multiline
-            numberOfLines={4}
-            style={styles.textArea}
-            value={formData.description}
-            onChangeText={(text) => setFormData({ ...formData, description: text })}
-            placeholder="A brand new car in excellent condition."
-          />
-          <Text style={styles.label}>Category</Text>
-          <EnhancedModalSelector
-            data={categories}
-            placeholder="Select Category"
-            selectedValue={categories.find(c => c.key === formData.category_id)?.label}
-            onSelect={(category) => 
-              setFormData({ ...formData, category_id: category.key })
-            }
-          />
-          <Text style={styles.label}>Brand</Text>
-          <EnhancedModalSelector
-            data={mobileBrands}
-            placeholder="Select Brand"
-            selectedValue={selectedBrand?.label}
-            onSelect={(brand) => {
-              setFormData({ ...formData, brand_id: brand.key });
-              setSelectedBrand(brand);
-            }}
-          />
-          <Text style={styles.label}>Model</Text>
-          <AnimatedInput
-            value={formData.model}
-            onChangeText={(text) => setFormData({ ...formData, model: text })}
-            placeholder="airpods pro"
-          />
-          <Text style={styles.label}>Product Images (up to 3)</Text>
-          {formData.images.length < 3 && (
-            <TouchableOpacity 
-              style={styles.imageButton} 
-              onPress={pickImage}
-            >
-              <Text style={styles.imageButtonText}>
-                Add Image ({formData.images.length}/3)
-              </Text>
-            </TouchableOpacity>
-          )}
-          {formData.images.length > 0 && (
-            <ScrollView 
-              horizontal={true} 
-              style={styles.imageScrollView}
-              showsHorizontalScrollIndicator={false}
-            >
-              {formData.images.map((uri, index) => (
-                <View key={index} style={styles.imagePreviewContainer}>
-                  <Image 
-                    source={{ uri }} 
-                    style={styles.imagePreview}
-                  />
-                  <TouchableOpacity
-                    style={styles.removeImageButton}
-                    onPress={() => removeImage(index)}
-                  >
-                    <Text style={styles.removeImageText}>×</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
-          )}
-          <Text style={styles.label}>Rating</Text>
-          <RatingSelector
-            rating={formData.rating}
-            onRatingChange={(rating) => setFormData({ ...formData, rating })}
-          />
-          <Text style={styles.label}>City</Text>
-          <AnimatedInput
-            value={formData.city}
-            onChangeText={(text) => setFormData({ ...formData, city: text })}
-            placeholder="Enter city"
-          />
-          <Text style={styles.label}>Price</Text>
-          <AnimatedInput
-            value={formData.price.toString()}
-            onChangeText={(text) => setFormData({ ...formData, price: text })}
-            placeholder="Enter price"
-            keyboardType="numeric"
-          />
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Submit Listing</Text>
+    
+    <ScrollView style={styles.container}>
+      <View style={styles.formContainer}>
+      <Text style={styles.heading}>Add an item</Text>
+        <Text style={styles.label}>Title</Text>
+        <AnimatedInput
+          value={formData.title}
+          onChangeText={(text) => setFormData({ ...formData, title: text })}
+          placeholder="Car for Sale"
+        />
+
+        <Text style={styles.label}>Description</Text>
+        <AnimatedInput
+          multiline
+          numberOfLines={4}
+          style={styles.textArea}
+          value={formData.description}
+          onChangeText={(text) => setFormData({ ...formData, description: text })}
+          placeholder="A brand new car in excellent condition."
+        />
+
+        <Text style={styles.label}>Category</Text>
+        <EnhancedModalSelector
+          data={categories}
+          placeholder="Select Category"
+          selectedValue={categories.find(c => c.key === formData.category_id)?.label}
+          onSelect={(category) => 
+            setFormData({ ...formData, category_id: category.key })
+          }
+        />
+
+        <Text style={styles.label}>Brand</Text>
+        <EnhancedModalSelector
+          data={mobileBrands}
+          placeholder="Select Brand"
+          selectedValue={selectedBrand?.label}
+          onSelect={(brand) => {
+            setFormData({ ...formData, brand_id: brand.key });
+            setSelectedBrand(brand);
+          }}
+        />
+
+        <Text style={styles.label}>Model</Text>
+        <AnimatedInput
+          value={formData.model}
+          onChangeText={(text) => setFormData({ ...formData, model: text })}
+          placeholder="airpods pro"
+        />
+
+        {/* Updated Image Capture Section */}
+        <Text style={styles.label}>Product Images (up to 3)</Text>
+        {formData.images.length < 3 && (
+          <TouchableOpacity 
+            style={styles.imageButton} 
+            onPress={pickImage}
+          >
+            <Text style={styles.imageButtonText}>
+              Add Image ({formData.images.length}/3)
+            </Text>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+        )}
+        
+        {formData.images.length > 0 && (
+          <ScrollView 
+            horizontal={true} 
+            style={styles.imageScrollView}
+            showsHorizontalScrollIndicator={false}
+          >
+            {formData.images.map((uri, index) => (
+              <View key={index} style={styles.imagePreviewContainer}>
+                <Image 
+                  source={{ uri }} 
+                  style={styles.imagePreview}
+                />
+                <TouchableOpacity
+                  style={styles.removeImageButton}
+                  onPress={() => removeImage(index)}
+                >
+                  <Text style={styles.removeImageText}>×</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        )}
+
+        <Text style={styles.label}>Rating</Text>
+        <RatingSelector
+          rating={formData.rating}
+          onRatingChange={(rating) => setFormData({ ...formData, rating })}
+        />
+
+        <Text style={styles.label}>City</Text>
+        <AnimatedInput
+          value={formData.city}
+          onChangeText={(text) => setFormData({ ...formData, city: text })}
+          placeholder="Enter city"
+        />
+
+        
+
+        <Text style={styles.label}>Price</Text>
+        <AnimatedInput
+          value={formData.price.toString()}
+          onChangeText={(text) => setFormData({ ...formData, price: text })}
+          placeholder="Enter price"
+          keyboardType="numeric"
+        />
+
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>Submit Listing</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -398,7 +394,6 @@ const styles = StyleSheet.create({
   input: {
     padding: 12,
     color: '#333',
-    textAlignVertical: 'center',
   },
   textArea: {
     height: 120,
