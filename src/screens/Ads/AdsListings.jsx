@@ -27,6 +27,8 @@ const AdsListings = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <Text style={styles.heading}>Available Items</Text>
+
       {ads.map((ad, index) => (
         <TouchableOpacity key={index} onPress={() => handleAdPress(ad)}>
           <View style={styles.cardContainer}>
@@ -168,6 +170,14 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     fontSize: 14,
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#0D2C54',
+    marginVertical: 16,
+    marginHorizontal: 16,
+    textAlign: 'center',
   },
 });
 
