@@ -7,18 +7,43 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  ActivityIndicator,
   Platform,
   StatusBar,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 
 export default function LoginScreen({ navigation }) {
-  const [mobile, setMobile] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = () => {
-    console.log("Logging in with:", mobile, password);
+    if (!email || !password) {
+      setError("All fields are required");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
+      .then(userCredential => {
+        console.log("User logged in:", userCredential.user);
+        setLoading(false);
+        navigation.navigate("Home", { message: "Logged in successfully" }); // Navigate to Home with success message
+      })
+      .catch(error => {
+        console.error("Error logging in:", error);
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          setError("Invalid email or password");
+        } else {
+          setError("Error logging in. Please try again.");
+        }
+        setLoading(false);
+      });
   };
 
   return (
@@ -29,7 +54,7 @@ export default function LoginScreen({ navigation }) {
           {
             /* Uncomment and add your logo image */
             <Image
-              source={require("../../assets/images/logo.png")}
+              source={require("../../assets/images/logofinal.png")}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -61,8 +86,8 @@ export default function LoginScreen({ navigation }) {
             <TextInput
               style={styles.input}
               placeholder="Enter Your Email"
-              value={mobile}
-              onChangeText={setMobile}
+              value={email}
+              onChangeText={setEmail}
               keyboardType="email-address"
               placeholderTextColor="#999"
             />
@@ -84,16 +109,15 @@ export default function LoginScreen({ navigation }) {
               </TouchableOpacity>
             </View>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>LOGIN</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={() => navigation.navigate("Home")}
-          >
-            <Text style={styles.loginButtonText}>HOME</Text>
-          </TouchableOpacity>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
+              {loading ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text style={styles.loginButtonText}>LOGIN</Text>
+              )}
+            </TouchableOpacity>
             <View style={styles.footerLinks}>
               <TouchableOpacity>
                 <Text style={styles.footerLinkText}>Login with email</Text>
@@ -123,7 +147,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   logo: {
-    width: 120,
+    width: 150,
     height: 120,
   },
   tabsOuterContainer: {
@@ -224,5 +248,10 @@ const styles = StyleSheet.create({
   footerLinkText: {
     color: "#0D2C54",
     fontSize: 14,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 16,
   },
 });

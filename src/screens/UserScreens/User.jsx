@@ -1,13 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, SafeAreaView, TouchableOpacity } from 'react-native';
+import { signOut } from 'firebase/auth';
+import { FIREBASE_AUTH } from '../../../firebaseConfig';
 import BottomNavigation from '../../components/common/BottomNavigator';
 
 const PRIMARY_COLOR = '#0D2C54';
 
-const UserProfile = () => {
+const UserProfile = ({ navigation }) => {
   const handleLogout = () => {
-    // Add logout logic here
-    console.log('Logging out...');
+    signOut(FIREBASE_AUTH)
+      .then(() => {
+        console.log('User logged out');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'LoginScreen' }],
+        }); // Clear navigation stack and navigate to LoginScreen
+      })
+      .catch(error => {
+        console.error('Error logging out:', error);
+      });
   };
 
   return (

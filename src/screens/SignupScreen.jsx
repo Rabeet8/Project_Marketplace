@@ -7,10 +7,11 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
-  KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -18,19 +19,52 @@ export default function SignUpScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSignUp = () => {
-    console.log("Signing up with:", email, password, confirmPassword);
+    if (!email || !password || !confirmPassword) {
+      setError("All fields are required");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
+      .then(userCredential => {
+        console.log("User signed up:", userCredential.user);
+        sendEmailVerification(userCredential.user)
+          .then(() => {
+            console.log("Email verification sent");
+            setLoading(false);
+            navigation.navigate("Home", { message: "Signed up successfully. Please verify your email." });
+          });
+      })
+      .catch(error => {
+        console.error("Error signing up:", error);
+        if (error.code === 'auth/email-already-in-use') {
+          setError("Email is already in use");
+        } else if (error.code === 'auth/weak-password') {
+          setError("Password should be at least 6 characters");
+        } else if (error.code === 'auth/missing-password') {
+          setError("Password is required");
+        } else {
+          setError("Error signing up. Please try again.");
+        }
+        setLoading(false);
+      });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-  
       <View style={styles.topSection}>
         {/* Logo Section */}
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../assets/images/logo.png")}
+            source={require("../../assets/images/logofinal.png")}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -53,71 +87,74 @@ export default function SignUpScreen({ navigation }) {
       </View>
 
       {/* White rounded container */}
-
       <View style={styles.contentContainer}>
-      <KeyboardAwareScrollView  contentContainerStyle={{autoscroll: true }} >
-        <Text style={styles.title}>Create an account</Text>
-        <Text style={styles.subtitle}>Sign up to get started</Text>
+        <KeyboardAwareScrollView contentContainerStyle={{ autoscroll: true }}>
+          <Text style={styles.title}>Create an account</Text>
+          <Text style={styles.subtitle}>Sign up to get started</Text>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Your Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            placeholderTextColor="#999"
-          />
-
-          <View style={styles.passwordContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
-              style={[styles.input, styles.passwordInput]}
-              placeholder="Password"
-              value={password}
-              secureTextEntry={!showPassword}
-              onChangeText={setPassword}
+              style={styles.input}
+              placeholder="Enter Your Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
               placeholderTextColor="#999"
             />
-            <TouchableOpacity
-              style={styles.showPasswordButton}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Text style={styles.showPasswordText}>Show</Text>
-            </TouchableOpacity>
-          </View>
 
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={[styles.input, styles.passwordInput]}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              secureTextEntry={!showConfirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholderTextColor="#999"
-            />
-            <TouchableOpacity
-              style={styles.showPasswordButton}
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              <Text style={styles.showPasswordText}>Show</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="Password"
+                value={password}
+                secureTextEntry={!showPassword}
+                onChangeText={setPassword}
+                placeholderTextColor="#999"
+              />
+              <TouchableOpacity
+                style={styles.showPasswordButton}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Text style={styles.showPasswordText}>Show</Text>
+              </TouchableOpacity>
+            </View>
 
-          <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-            <Text style={styles.signUpButtonText}>SIGN UP</Text>
-          </TouchableOpacity>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                secureTextEntry={!showConfirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholderTextColor="#999"
+              />
+              <TouchableOpacity
+                style={styles.showPasswordButton}
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                <Text style={styles.showPasswordText}>Show</Text>
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.footerLinks}>
-            <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
-              <Text style={styles.footerLinkText}>
-                Already have an account? Login
-              </Text>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+            <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp} disabled={loading}>
+              {loading ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text style={styles.signUpButtonText}>SIGN UP</Text>
+              )}
             </TouchableOpacity>
+
+            <View style={styles.footerLinks}>
+              <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+                <Text style={styles.footerLinkText}>
+                  Already have an account? Login
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        
-        </View>
-        
-      </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView>
       </View>
     </SafeAreaView>
   );
@@ -137,7 +174,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   logo: {
-    width: 120,
+    width: 150,
     height: 120,
   },
   tabsOuterContainer: {
@@ -238,5 +275,10 @@ const styles = StyleSheet.create({
   footerLinkText: {
     color: "#0D2C54",
     fontSize: 14,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 16,
   },
 });

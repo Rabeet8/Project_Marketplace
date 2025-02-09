@@ -5,7 +5,7 @@ import { useFonts } from "expo-font";
 import Fonts from "@/constants/Fonts";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import SingleAdDetails from "../src/screens/Ads/SingleAdDetails";
+import SingleAdDetails from "../src/screens/Ads/SingleAdDetails.jsx";
 import HomeScreen from '../src/screens/HomeScreen'
 import LoginScreen from "../src/screens/LoginScreen";
 import SignupScreen from "../src/screens/SignupScreen";
@@ -41,7 +41,7 @@ export default function App() {
   return (
     <NavigationIndependentTree>
       <NavigationContainer >
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="LoginScreen">
           <Stack.Screen
             name="LoginScreen"
             component={LoginScreen}
