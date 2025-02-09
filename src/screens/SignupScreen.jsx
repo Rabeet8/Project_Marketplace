@@ -36,6 +36,7 @@ export default function SignUpScreen({ navigation }) {
     createUserWithEmailAndPassword(FIREBASE_AUTH, email, password)
       .then(userCredential => {
         console.log("User signed up:", userCredential.user);
+        console.log("User email:", userCredential.user.email); // Add this line
         sendEmailVerification(userCredential.user)
           .then(() => {
             console.log("Email verification sent");

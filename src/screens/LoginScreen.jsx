@@ -31,7 +31,8 @@ export default function LoginScreen({ navigation }) {
     setError("");
     signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
       .then(userCredential => {
-        console.log("User logged in:", userCredential.user);
+        console.log("User logged in successfully");
+        console.log("User email:", userCredential.user.email); 
         setLoading(false);
         navigation.navigate("Home", { message: "Logged in successfully" }); // Navigate to Home with success message
       })
