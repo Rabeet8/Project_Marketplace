@@ -371,26 +371,6 @@ const CarListingComponent = () => {
       >
         <Text style={styles.submitButtonText}>Submit Listing</Text>
       </TouchableOpacity>
-
-      <View style={styles.categoriesContainer}>
-        <TouchableOpacity 
-          style={styles.categoryButton}
-          onPress={() => handleCategorySelect('All')}
-        >
-          <Text style={styles.categoryButtonText}>All Items</Text>
-        </TouchableOpacity>
-
-        {categories.map((cat) => (
-          <TouchableOpacity 
-            key={cat.key}
-            style={styles.categoryButton}
-            onPress={() => handleCategorySelect(cat.key)}
-          >
-            <Text style={styles.categoryButtonText}>{cat.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
     </ScrollView>
   );
 };

@@ -1,7 +1,7 @@
 const adsData = [
   {
     "title": "MacBook Pro 16-inch M1",
-    "description": "Powerful MacBook Pro with M1 chip, 16GB RAM, and 1TB SSD.",
+    "description": "Powerful MacBook Pro with M1 chip, 16GB RAM, and 1TB SSD adfsf qeqwe qweq eqew 123 qweqwe qweq eqqw qweqw eqwe.",
     "brand_id": 1,
     "model": "MacBook Pro 2021",
     "rating": 9,
