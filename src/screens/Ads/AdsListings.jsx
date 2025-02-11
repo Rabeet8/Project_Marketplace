@@ -60,7 +60,7 @@ const AdsListings = () => {
               
               <View style={styles.tagContainer}>
                 <View style={styles.serviceTag}>
-                  <Text style={styles.tagText}>{categoryName || 'Service'}</Text>
+                  <Text style={styles.tagText}>{categoryName || 'Item Name'}</Text>
                 </View>
               </View>
               
