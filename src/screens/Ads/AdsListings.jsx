@@ -8,16 +8,26 @@ const AdsListings = () => {
   const [ads, setAds] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
-  const { category } = route.params;
+  
+  const { category = 'All', categoryName = 'All Items' } = route.params || {};
 
   useEffect(() => {
+    console.log('Filtering by Category:', category, categoryName);
+
     if (category === 'All') {
+      console.log('Showing all ads');
       setAds(adsData);
     } else {
-      const filteredAds = adsData.filter(ad => ad.category_id === category);
+      console.log('Filtering ads for category:', category);
+      const filteredAds = adsData.filter(ad => {
+        const match = ad.category_id.toString() === category.toString();
+        console.log(`Comparing ad ${ad.title}: ${ad.category_id} === ${category} : ${match}`);
+        return match;
+      });
+      console.log('Filtered Ads:', filteredAds);
       setAds(filteredAds);
     }
-  }, [category]);
+  }, [category, categoryName]);
 
   const handleAdPress = (ad) => {
     const aiData = adsAIData.find(ai => ai.ad_id === ad.ad_id);
@@ -27,7 +37,9 @@ const AdsListings = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.heading}>Available Items</Text>
+      <Text style={styles.heading}>
+        {categoryName === 'All Items' ? 'All Items' : `${categoryName} Items`}
+      </Text>
 
       {ads.map((ad, index) => (
         <TouchableOpacity key={index} onPress={() => handleAdPress(ad)}>
@@ -48,7 +60,7 @@ const AdsListings = () => {
               
               <View style={styles.tagContainer}>
                 <View style={styles.serviceTag}>
-                  <Text style={styles.tagText}>Service</Text>
+                  <Text style={styles.tagText}>{categoryName || 'Service'}</Text>
                 </View>
               </View>
               

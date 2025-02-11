@@ -12,10 +12,12 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { X } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const API_URL = 'https://c2a8-2404-3100-1456-4f16-148-9dd9-294f-f695.ngrok-free.app/';
+const API_URL = 'https://cartkro.azurewebsites.net/';
 
 const CarListingComponent = () => {
+  const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -63,15 +65,11 @@ const CarListingComponent = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_URL}/categories`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(`${API_URL}/categories`);
       const data = await response.json();
+      // Transform the array format [[id, name]] into objects
       const categoryNames = data.map(category => ({
-        key: category[0],
+        key: category[0].toString(), // Convert ID to string
         label: category[1]
       }));
       setCategories(categoryNames);
@@ -220,6 +218,26 @@ const CarListingComponent = () => {
     </Modal>
   );
 
+  const handleCategorySelect = (categoryId) => {
+    if (categoryId === 'All') {
+      navigation.navigate('AdsListings', {
+        category: 'All',
+        categoryName: 'All Items'
+      });
+      return;
+    }
+
+    const selectedCategory = categories.find(cat => cat.key === categoryId.toString());
+    console.log('Selected Category:', selectedCategory); // Debug log
+    
+    if (selectedCategory) {
+      navigation.navigate('AdsListings', {
+        category: selectedCategory.key,
+        categoryName: selectedCategory.label
+      });
+    }
+  };
+
   return (
     <ScrollView 
       style={styles.container}
@@ -353,6 +371,26 @@ const CarListingComponent = () => {
       >
         <Text style={styles.submitButtonText}>Submit Listing</Text>
       </TouchableOpacity>
+
+      <View style={styles.categoriesContainer}>
+        <TouchableOpacity 
+          style={styles.categoryButton}
+          onPress={() => handleCategorySelect('All')}
+        >
+          <Text style={styles.categoryButtonText}>All Items</Text>
+        </TouchableOpacity>
+
+        {categories.map((cat) => (
+          <TouchableOpacity 
+            key={cat.key}
+            style={styles.categoryButton}
+            onPress={() => handleCategorySelect(cat.key)}
+          >
+            <Text style={styles.categoryButtonText}>{cat.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
     </ScrollView>
   );
 };
@@ -502,6 +540,23 @@ const styles = StyleSheet.create({
   },
   selectedModalItemText: {
     color: 'white',
+  },
+  categoriesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 16,
+  },
+  categoryButton: {
+    backgroundColor: '#0D2C54',
+    padding: 10,
+    borderRadius: 8,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  categoryButtonText: {
+    color: 'white',
+    fontSize: 14,
   },
 });
 
