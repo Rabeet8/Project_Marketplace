@@ -18,25 +18,6 @@ import BottomNavigator from "../../components/common/BottomNavigator";
 const SingleAdDetails = () => {
   const route = useRoute();
   const { ad, aiData } = route.params;
-  const [categoryName, setCategoryName] = useState("");
-  const API_URL = 'https://cartkro.azurewebsites.net';
-
-  useEffect(() => {
-    fetchCategoryName();
-  }, []);
-
-  const fetchCategoryName = async () => {
-    try {
-      const response = await fetch(`${API_URL}/categories`);
-      const categories = await response.json();
-      const category = categories.find(([id]) => id.toString() === ad.category_id.toString());
-      if (category) {
-        setCategoryName(category[1]); // category[1] contains the name
-      }
-    } catch (error) {
-      console.error('Error fetching category:', error);
-    }
-  };
 
   const [activeTab, setActiveTab] = useState("user");
   const [modalVisible, setModalVisible] = useState(false);
@@ -88,7 +69,7 @@ const SingleAdDetails = () => {
                     <Text style={styles.username}>{ad.username}</Text>
                     <Text style={styles.memberSince}>Member since {ad.memberSince}</Text>
                   </View>
-                  <Text style={styles.serviceBadge}>{categoryName || 'Item'}</Text>
+                  <Text style={styles.serviceBadge}>{'Item'}</Text>
                 </View>
 
                 <View style={styles.infoSection}>

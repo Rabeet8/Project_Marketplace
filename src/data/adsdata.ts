@@ -10,7 +10,7 @@ const adsData = [
     "timestamp": "2024-02-01 12:30:00",
     "longitude": "34.0522",
     "latitude": "-118.2437",
-    "category_id": "2", // Changed from 1 to 2 (Laptops)
+    "category_id": "1", // Changed from 1 to 2 (Laptops)
     "price": 2300,
     "user_id": 11,
     "ad_id": 1,
