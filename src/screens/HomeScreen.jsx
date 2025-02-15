@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import Header from "../components/common/Header"
 import Categories from "../components/home/Categories";
 import SearchBar from "../components/home/SearchBar";
@@ -9,6 +9,7 @@ import MainProduct from "../components/home/MainProduct";
 import BottomNavigationBar from "../components/common/BottomNavigator";
 
 const HomeScreen = () => {
+
   const DATA = [
     { id: "1", component: <Header /> },
     { id: "2", component: <Categories /> },

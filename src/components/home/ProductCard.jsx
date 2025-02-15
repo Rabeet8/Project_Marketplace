@@ -7,39 +7,65 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import adsData from "../../data/adsdata"; // Import ads data
-import adsAIData from "../../data/adsAiData"; // Import AI ads data
+import useFetchAds from "../../hooks/useFetchAds"; // Import the useFetchAds hook
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.75;
 
+const shuffleArray = (array) => {
+  return array.sort(() => Math.random() - 0.5);
+};
+
 const ProductList = () => {
+  const { data: ads, loading, error } = useFetchAds(); // Use the hook to fetch ads
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0D2C54" style={styles.loadingIndicator} />;
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Error fetching ads</Text>
+      </View>
+    );
+  }
+
+  if (!Array.isArray(ads)) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>No ads available</Text>
+      </View>
+    );
+  }
+
+  const shuffledAds = shuffleArray(ads);
+  const limitedAds = shuffledAds.slice(0, 10); // Limit to the first 10 ads
+
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContainer}
-    >
-      {adsData.map((ad) => (
-        <ProductCard key={ad.img_id} ad={ad} />
-      ))}
-    </ScrollView>
+    <View>
+      <Text style={styles.heading}>Recommended Ads</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
+      >
+        {limitedAds.map((ad) => (
+          <ProductCard key={ad.img_id} ad={ad} />
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 
-const ProductCard = ({
-  ad,
-  isFavorite = false,
-}) => {
+const ProductCard = ({ ad }) => {
   const navigation = useNavigation();
 
   const handleAdPress = (ad) => {
-    const aiData = adsAIData.find(ai => ai.ad_id === ad.ad_id);
-    console.log('AI Data:', aiData); // Add logging to verify the AI data
-    navigation.navigate('SingleAdDetails', { ad, aiData });
+    navigation.navigate('SingleAdDetails', { ad });
   };
 
   return (
@@ -72,6 +98,13 @@ const ProductCard = ({
 };
 
 const styles = StyleSheet.create({
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#0D2C54',
+    marginVertical: 16,
+    marginHorizontal: 16,
+  },
   scrollContainer: {
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -114,17 +147,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-  heartButton: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    width: 36,
-    height: 36,
-    backgroundColor: "rgba(0,0,0,0.3)",
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   contentContainer: {
     padding: 12,
   },
@@ -151,6 +173,19 @@ const styles = StyleSheet.create({
   timeAgo: {
     fontSize: 12,
     color: "#999",
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
   },
 });
 
