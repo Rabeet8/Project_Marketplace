@@ -42,7 +42,7 @@ export default function App() {
   return (
     <NavigationIndependentTree>
       <NavigationContainer >
-        <Stack.Navigator initialRouteName="AdUploadScreenCopy">
+        <Stack.Navigator initialRouteName="LoginScreen">
           <Stack.Screen
             name="LoginScreen"
             component={LoginScreen}
@@ -79,11 +79,11 @@ export default function App() {
             component={User}
             options={{ headerShown: false }}
           />
-            <Stack.Screen
+            {/* <Stack.Screen
             name="AdUploadScreenCopy"
             component={AdUploadScreenCopy}
             options={{ headerShown: false }}
-          />
+          /> */}
           {/* <Stack.Screen
             name="Chat"
             component={ChatScreen}
