@@ -8,11 +8,13 @@ import {
   ScrollView, 
   Image,
   Platform,
-  Modal 
+  Modal,
+  ActivityIndicator 
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { X } from 'lucide-react-native';
+import { X, CheckCircle2, XCircle } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as Location from 'expo-location';
 
 const API_URL = 'https://cartkro.azurewebsites.net/';
 
@@ -37,9 +39,22 @@ const AdUploadScreenCOPY = () => {
   const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
   const [isBrandModalVisible, setIsBrandModalVisible] = useState(false);
 
+  const [location, setLocation] = useState({
+    coords: {
+      latitude: null,
+      longitude: null
+    }
+  });
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   useEffect(() => {
     fetchBrands();
     fetchCategories();
+    getCurrentLocation();
   }, []);
 
   const fetchBrands = async () => {
@@ -95,6 +110,22 @@ const AdUploadScreenCOPY = () => {
     }
   };
 
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Please allow location access to continue');
+        return;
+      }
+
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+    } catch (error) {
+      console.error('Error getting location:', error);
+      Alert.alert('Error', 'Unable to get your location');
+    }
+  };
+
   const takeImage = async () => {
     if (images.length >= 3) {
       alert('Maximum 3 images allowed');
@@ -124,27 +155,31 @@ const AdUploadScreenCOPY = () => {
   };
 
   const submitListing = async () => {
+    setIsLoading(true);
     try {
-        let imagesX = ["https://firebasestorage.googleapis.com/v0/b/pokemon-25f5d.firebasestorage.app/o/mob1.jpeg?alt=media&token=28a3d9b2-d993-4f8a-8ada-19d194b95d24"]
-        const payload = {
-          title,
-          description,
-          category_id: category,
-          brand_id: brand,
-          model,
-          rating: parseInt(rating),
-          city,
-          price: parseFloat(price),
-          user_id: 1, // Replace with actual user ID
-          imageURLs: imagesX,
-          timestamp: new Date().toISOString(), // Add current timestamp in ISO format
-          prompt: "Rate the product out of 10, also give the description and return response in format json with keys (rating, description), this description will be used in marketplace ads so create the description about the product that will be used in ads like an amazon.",
-          longitude: "40.7128",
-          latitude: "-74.0060",
-      
-        };
+      // Validation
+      if (!title || !description || !category || !brand || !model || !city || !price) {
+        throw new Error('Please fill in all required fields');
+      }
 
-        console.log('Submitting payload:', payload);
+      let imagesX = ["https://firebasestorage.googleapis.com/v0/b/pokemon-25f5d.firebasestorage.app/o/mob1.jpeg?alt=media&token=28a3d9b2-d993-4f8a-8ada-19d194b95d24"]
+      const payload = {
+        title,
+        description,
+        category_id: category,
+        brand_id: brand,
+        model,
+        rating: parseInt(rating),
+        city,
+        price: parseFloat(price),
+        user_id: 1, // Replace with actual user ID
+        imageURLs: imagesX,
+        timestamp: new Date().toISOString(), // Add current timestamp in ISO format
+        prompt: "Rate the product out of 10, also give the description and return response in format json with keys (rating, description), this description will be used in marketplace ads so create the description about the product that will be used in ads like an amazon.",
+        longitude: location.coords.longitude?.toString() || "0",
+        latitude: location.coords.latitude?.toString() || "0",
+    
+      };
 
       const response = await fetch(`${API_URL}/ads`, {
         method: 'POST',
@@ -155,10 +190,35 @@ const AdUploadScreenCOPY = () => {
       });
 
       const result = await response.json();
-      console.log('Submission result:', result);
       
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to create ad');
+      }
+
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        // Reset form fields
+        setTitle('');
+        setDescription('');
+        setCategory('');
+        setBrand('');
+        setModel('');
+        setRating(6);
+        setCity('');
+        setPrice('');
+        setImages([]);
+      }, 2000);
+
     } catch (error) {
       console.error('Error submitting listing:', error);
+      setErrorMessage(error.message || 'Something went wrong');
+      setShowErrorModal(true);
+      setTimeout(() => {
+        setShowErrorModal(false);
+      }, 2000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -234,11 +294,70 @@ const AdUploadScreenCOPY = () => {
     }
   };
 
+  // Add this new component for success modal
+  const SuccessModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={showSuccessModal}
+      onRequestClose={() => setShowSuccessModal(false)}
+    >
+      <View style={styles.successModalOverlay}>
+        <View style={styles.successModalContent}>
+          <View style={styles.iconContainer}>
+            <CheckCircle2 color="#2E7D32" size={65} />
+          </View>
+          <Text style={styles.successModalTitle}>Success!</Text>
+          <Text style={styles.successModalText}>Your ad has been created successfully</Text>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  // Add Loading Modal Component
+  const LoadingModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={isLoading}
+    >
+      <View style={styles.loadingModalOverlay}>
+        <View style={styles.loadingModalContent}>
+          <ActivityIndicator size="large" color="#0D2C54" />
+          <Text style={styles.loadingModalText}>Creating your ad...</Text>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  // Add Error Modal Component
+  const ErrorModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={showErrorModal}
+      onRequestClose={() => setShowErrorModal(false)}
+    >
+      <View style={styles.errorModalOverlay}>
+        <View style={styles.errorModalContent}>
+          <View style={styles.errorIconContainer}>
+            <XCircle color="#D32F2F" size={65} />
+          </View>
+          <Text style={styles.errorModalTitle}>Error!</Text>
+          <Text style={styles.errorModalText}>{errorMessage}</Text>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <ScrollView 
       style={styles.container}
       keyboardShouldPersistTaps="handled"
     >
+      <SuccessModal />
+      <ErrorModal />
+      <LoadingModal />
       <Text style={styles.heading}>Add an item</Text>
 
       <TextInput
@@ -533,6 +652,111 @@ const styles = StyleSheet.create({
   categoryButtonText: {
     color: 'white',
     fontSize: 14,
+  },
+  successModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successModalContent: {
+    backgroundColor: 'white',
+    padding: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '85%',
+    maxWidth: 400,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  iconContainer: {
+    backgroundColor: 'rgba(46, 125, 50, 0.1)',
+    borderRadius: 50,
+    padding: 15,
+    marginBottom: 15,
+  },
+  successModalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2E7D32',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  successModalText: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  loadingModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingModalContent: {
+    backgroundColor: 'white',
+    padding: 30,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '85%',
+    maxWidth: 400,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    gap: 15,
+  },
+  loadingModalText: {
+    fontSize: 16,
+    color: '#0D2C54',
+    marginTop: 10,
+    fontWeight: '600',
+  },
+  errorModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorModalContent: {
+    backgroundColor: 'white',
+    padding: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '85%',
+    maxWidth: 400,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  errorIconContainer: {
+    backgroundColor: 'rgba(211, 47, 47, 0.1)',
+    borderRadius: 50,
+    padding: 15,
+    marginBottom: 15,
+  },
+  errorModalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#D32F2F',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  errorModalText: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });
 
