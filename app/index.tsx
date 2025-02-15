@@ -12,7 +12,7 @@ import SignupScreen from "../src/screens/SignupScreen";
 import AdsListings from "../src/screens/Ads/AdsListings";
 import AdUploadScreen from "../src/screens/Ads/AdUploadScreen";
 import User from "../src/screens/UserScreens/User"
-
+import ChatScreen from "../src/screens/ChatScreen.jsx"
 
 SplashScreen.preventAutoHideAsync();
 
@@ -75,6 +75,11 @@ export default function App() {
           <Stack.Screen
             name="User"
             component={User}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

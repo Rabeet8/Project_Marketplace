@@ -12,18 +12,26 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { Picker } from '@react-native-picker/picker';
+import { BASE_URL } from "@/app/environment";
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [gender, setGender] = useState("");
+  const [city, setCity] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSignUp = () => {
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword || !firstName || !lastName || !phoneNumber || !gender || !city || !dateOfBirth) {
       setError("All fields are required");
       return;
     }
@@ -39,8 +47,34 @@ export default function SignUpScreen({ navigation }) {
         sendEmailVerification(userCredential.user)
           .then(() => {
             console.log("Email verification sent");
-            setLoading(false);
-            navigation.navigate("Home", { message: "Signed up successfully. Please verify your email." });
+            const userData = {
+              uid: userCredential.user.uid,
+              firstName,
+              lastName,
+              email,
+              phoneNumber,
+              gender,
+              city,
+              dateOfBirth,
+            };
+            fetch(`${BASE_URL}users`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(userData),
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log("User data posted:", data);
+                setLoading(false);
+                navigation.navigate("Home", { message: "Signed up successfully. Please verify your email." });
+              })
+              .catch(error => {
+                console.error("Error posting user data:", error);
+                setError("Error signing up. Please try again.");
+                setLoading(false);
+              });
           });
       })
       .catch(error => {
@@ -93,6 +127,53 @@ export default function SignUpScreen({ navigation }) {
           <Text style={styles.subtitle}>Sign up to get started</Text>
 
           <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+              placeholderTextColor="#999"
+            />
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={gender}
+                style={styles.picker}
+                onValueChange={(itemValue) => setGender(itemValue)}
+              >
+                <Picker.Item label="Select Gender" value="" />
+                <Picker.Item label="Male" value="male" />
+                <Picker.Item label="Female" value="female" />
+              </Picker>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="City"
+              value={city}
+              onChangeText={setCity}
+              placeholderTextColor="#999"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Date of Birth (YYYY-MM-DD)"
+              value={dateOfBirth}
+              onChangeText={setDateOfBirth}
+              placeholderTextColor="#999"
+            />
             <TextInput
               style={styles.input}
               placeholder="Enter Your Email"
@@ -237,6 +318,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     fontSize: 16,
+  },
+  pickerContainer: {
+    height: 48,
+    borderColor: "#E0E0E0",
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 16,
+    justifyContent: 'center',
+  },
+  picker: {
+    height: 48,
+    width: '100%',
   },
   passwordContainer: {
     position: "relative",
