@@ -14,7 +14,7 @@ import AdUploadScreen from "../src/screens/Ads/AdUploadScreen";
 import User from "../src/screens/UserScreens/User"
 import ChatScreen from "../src/screens/ChatScreen.jsx"
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync(); 
 
 const Stack = createNativeStackNavigator();
 
