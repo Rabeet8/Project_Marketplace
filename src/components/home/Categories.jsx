@@ -1,38 +1,50 @@
-import React from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
 const Categories = () => {
   const navigation = useNavigation();
+  const [categories, setCategories] = useState([]);
+  const API_URL = 'https://cartkro.azurewebsites.net';
 
-  const categories = [
-    { id: 'All', name: 'All' },
-    { id: 1, name: 'Laptops' },
-    { id: 2, name: 'Mobiles' },
-    { id: 3, name: 'Gadgets' },
-    { id: 6, name: 'Wearables' }
-  ];
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-  const handleCategoryPress = (category) => {
-    navigation.navigate("AdsListings", { category });
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(`${API_URL}/categories`);
+      const data = await response.json();
+      setCategories(data); // Store the raw API response
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const handleCategoryPress = (categoryId, categoryName) => {
+    navigation.navigate("AdsListings", { 
+      category: categoryId.toString(),
+      categoryName: categoryName
+    });
   };
 
   return (
     <View style={styles.categoriesContainer}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {categories.map((category, index) => (
+        <TouchableOpacity
+          style={styles.categoryButton}
+          onPress={() => handleCategoryPress('All', 'All Items')}
+        >
+          <Text style={styles.categoryText}>All Items</Text>
+        </TouchableOpacity>
+
+        {categories.map(([id, name], index) => (
           <TouchableOpacity
             key={index}
             style={styles.categoryButton}
-            onPress={() => handleCategoryPress(category.id)}
+            onPress={() => handleCategoryPress(id, name)}
           >
-            <Text style={styles.categoryText}>{category.name}</Text>
+            <Text style={styles.categoryText}>{name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>

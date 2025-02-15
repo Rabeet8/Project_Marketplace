@@ -7,15 +7,17 @@ import {
   StyleSheet, 
   ScrollView, 
   Image,
-  Platform 
+  Platform,
+  Modal 
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { X } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const API_URL = 'https://4cb0-2400-adc1-112-2f00-8d-2355-fd50-892b.ngrok-free.app';
+const API_URL = 'https://cartkro.azurewebsites.net/';
 
 const CarListingComponent = () => {
+  const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -31,6 +33,9 @@ const CarListingComponent = () => {
   
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingBrands, setIsLoadingBrands] = useState(true);
+
+  const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
+  const [isBrandModalVisible, setIsBrandModalVisible] = useState(false);
 
   useEffect(() => {
     fetchBrands();
@@ -60,15 +65,11 @@ const CarListingComponent = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_URL}/categories`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(`${API_URL}/categories`);
       const data = await response.json();
+      // Transform the array format [[id, name]] into objects
       const categoryNames = data.map(category => ({
-        key: category[0],
+        key: category[0].toString(), // Convert ID to string
         label: category[1]
       }));
       setCategories(categoryNames);
@@ -165,6 +166,78 @@ const CarListingComponent = () => {
     }
   };
 
+  const renderSelectionModal = (
+    visible,
+    setVisible,
+    data,
+    selectedValue,
+    onSelect,
+    title
+  ) => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => setVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{title}</Text>
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={() => setVisible(false)}
+            >
+              <X color="#0D2C54" size={24} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={styles.modalList}>
+            {data.map((item) => (
+              <TouchableOpacity
+                key={item.key}
+                style={[
+                  styles.modalItem,
+                  selectedValue === item.key && styles.selectedModalItem
+                ]}
+                onPress={() => {
+                  onSelect(item.key);
+                  setVisible(false);
+                }}
+              >
+                <Text style={[
+                  styles.modalItemText,
+                  selectedValue === item.key && styles.selectedModalItemText
+                ]}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const handleCategorySelect = (categoryId) => {
+    if (categoryId === 'All') {
+      navigation.navigate('AdsListings', {
+        category: 'All',
+        categoryName: 'All Items'
+      });
+      return;
+    }
+
+    const selectedCategory = categories.find(cat => cat.key === categoryId.toString());
+    console.log('Selected Category:', selectedCategory); // Debug log
+    
+    if (selectedCategory) {
+      navigation.navigate('AdsListings', {
+        category: selectedCategory.key,
+        categoryName: selectedCategory.label
+      });
+    }
+  };
+
   return (
     <ScrollView 
       style={styles.container}
@@ -189,33 +262,41 @@ const CarListingComponent = () => {
         multiline
       />
 
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={category}
-          onValueChange={(itemValue) => setCategory(itemValue)}
-          style={styles.picker}
-          enabled={!isLoadingCategories}
-        >
-          <Picker.Item label="Select Category" value="" />
-          {categories.map((cat) => (
-            <Picker.Item key={cat.key} label={cat.label} value={cat.key} />
-          ))}
-        </Picker>
-      </View>
+      <TouchableOpacity 
+        style={styles.selectButton}
+        onPress={() => setIsCategoryModalVisible(true)}
+      >
+        <Text style={styles.selectButtonText}>
+          {category ? categories.find(c => c.key === category)?.label : 'Select Category'}
+        </Text>
+      </TouchableOpacity>
 
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={brand}
-          onValueChange={(itemValue) => setBrand(itemValue)}
-          style={styles.picker}
-          enabled={!isLoadingBrands}
-        >
-          <Picker.Item label="Select Brand" value="" />
-          {brands.map((brandItem) => (
-            <Picker.Item key={brandItem.key} label={brandItem.label} value={brandItem.key} />
-          ))}
-        </Picker>
-      </View>
+      <TouchableOpacity 
+        style={styles.selectButton}
+        onPress={() => setIsBrandModalVisible(true)}
+      >
+        <Text style={styles.selectButtonText}>
+          {brand ? brands.find(b => b.key === brand)?.label : 'Select Brand'}
+        </Text>
+      </TouchableOpacity>
+
+      {renderSelectionModal(
+        isCategoryModalVisible,
+        setIsCategoryModalVisible,
+        categories,
+        category,
+        setCategory,
+        'Select Category'
+      )}
+
+      {renderSelectionModal(
+        isBrandModalVisible,
+        setIsBrandModalVisible,
+        brands,
+        brand,
+        setBrand,
+        'Select Brand'
+      )}
 
       <TextInput
         style={styles.input}
@@ -249,6 +330,7 @@ const CarListingComponent = () => {
         </View>
       </View>
 
+      <Text style={styles.label}>Rate your device:</Text>
       <View style={styles.ratingContainer}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
           <TouchableOpacity 
@@ -313,14 +395,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: '#0D2C54',
   },
-  pickerContainer: {
+  selectButton: {
     borderWidth: 1,
     borderColor: '#0D2C54',
     borderRadius: 8,
+    padding: 12,
     marginBottom: 16,
+    backgroundColor: 'white',
   },
-  picker: {
-    height: 50,
+  selectButtonText: {
     color: '#0D2C54',
   },
   imageUploadContainer: {
@@ -357,10 +440,17 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 2,
   },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#0D2C54',
+    marginBottom: 8,
+  },
   ratingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
+    paddingHorizontal: 4, // Add some padding for better spacing
   },
   ratingButton: {
     padding: 8,
@@ -383,6 +473,70 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#0D2C54',
+  },
+  closeButton: {
+    padding: 4,
+  },
+  modalList: {
+    padding: 16,
+  },
+  modalItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: '#F5F5F5',
+  },
+  selectedModalItem: {
+    backgroundColor: '#0D2C54',
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#0D2C54',
+  },
+  selectedModalItemText: {
+    color: 'white',
+  },
+  categoriesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 16,
+  },
+  categoryButton: {
+    backgroundColor: '#0D2C54',
+    padding: 10,
+    borderRadius: 8,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  categoryButtonText: {
+    color: 'white',
+    fontSize: 14,
   },
 });
 
