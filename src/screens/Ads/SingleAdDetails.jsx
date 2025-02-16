@@ -12,6 +12,8 @@ import {
 import { useRoute } from "@react-navigation/native";
 import block from "../../../assets/images/block.jpg";
 import logo1 from "../../../assets/images/logo1.png";
+import profile from "../../../assets/images/profile.png";
+
 import aiLogo from "../../../assets/images/ai-logo.png";
 import BottomNavigator from "../../components/common/BottomNavigator";
 
@@ -19,7 +21,10 @@ const SingleAdDetails = () => {
   const route = useRoute();
   const { ad, aiData } = route.params;
   const [categoryName, setCategoryName] = useState("");
+  const carouselImages = [block, profile];
   const API_URL = 'https://cartkro.azurewebsites.net';
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     fetchCategoryName();
@@ -45,6 +50,23 @@ const SingleAdDetails = () => {
   const toggleTab = (tab) => {
     setActiveTab(tab);
   };
+
+  const goToNextImage = () => {
+    if (currentImageIndex < carouselImages.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    } else {
+      setCurrentImageIndex(0); // Loop back to the first image
+    }
+  };
+
+  const goToPreviousImage = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    } else {
+      setCurrentImageIndex(carouselImages.length - 1); // Loop to the last image
+    }
+  };
+
 
   const showDescription = (description) => {
     setCurrentDescription(description);
@@ -78,8 +100,36 @@ const SingleAdDetails = () => {
         <ScrollView style={styles.scrollView}>
           {activeTab === "user" && (
             <View style={styles.detailsContainer}>
-              <View style={styles.imageContainer}>
-                <Image source={block} style={styles.image} />
+             <View style={styles.imageContainer}>
+                <Image source={carouselImages[currentImageIndex]} style={styles.image} />
+                
+                {/* Navigation arrows for the carousel */}
+                <TouchableOpacity 
+                  style={[styles.carouselButton, styles.leftButton]} 
+                  onPress={goToPreviousImage}
+                >
+                  <Text style={styles.carouselButtonText}>‹</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.carouselButton, styles.rightButton]} 
+                  onPress={goToNextImage}
+                >
+                  <Text style={styles.carouselButtonText}>›</Text>
+                </TouchableOpacity>
+                
+                {/* Image indicators */}
+                <View style={styles.indicatorContainer}>
+                  {carouselImages.map((_, index) => (
+                    <View 
+                      key={index} 
+                      style={[
+                        styles.indicator, 
+                        index === currentImageIndex && styles.activeIndicator
+                      ]} 
+                    />
+                  ))}
+                </View>
               </View>
               <View style={styles.contentContainer}>
                 <View style={styles.userInfo}>
@@ -120,7 +170,35 @@ const SingleAdDetails = () => {
           {activeTab === "ai" && aiData && (
             <View style={styles.detailsContainer}>
               <View style={styles.imageContainer}>
-                <Image source={block} style={styles.image} />
+                <Image source={carouselImages[currentImageIndex]} style={styles.image} />
+                
+                {/* Navigation arrows for the carousel */}
+                <TouchableOpacity 
+                  style={[styles.carouselButton, styles.leftButton]} 
+                  onPress={goToPreviousImage}
+                >
+                  <Text style={styles.carouselButtonText}>‹</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.carouselButton, styles.rightButton]} 
+                  onPress={goToNextImage}
+                >
+                  <Text style={styles.carouselButtonText}>›</Text>
+                </TouchableOpacity>
+                
+                {/* Image indicators */}
+                <View style={styles.indicatorContainer}>
+                  {carouselImages.map((_, index) => (
+                    <View 
+                      key={index} 
+                      style={[
+                        styles.indicator, 
+                        index === currentImageIndex && styles.activeIndicator
+                      ]} 
+                    />
+                  ))}
+                </View>
               </View>
               <View style={styles.contentContainer}>
                 <View style={styles.userInfo}>
@@ -168,7 +246,7 @@ const SingleAdDetails = () => {
         <View style={styles.bottomButtonContainer}>
           <TouchableOpacity style={styles.callButton}>
             <Text style={styles.callButtonText}>
-              {activeTab === "user" ? "Call Seller" : "Get Help"}
+              {activeTab === "user" ? "Call Seller" : "Call Seller"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -230,6 +308,46 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D2C54",
     borderColor: "#0D2C54",
   },
+
+  carouselButton: {
+    position: 'absolute',
+    top: '40%',
+    backgroundColor: '#0D2C54',  // Single solid color matching theme
+    borderRadius: 25,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  leftButton: {
+    left: 15,
+  },
+  rightButton: {
+    right: 15,
+  },
+  carouselButtonText: {
+    color: 'white',
+    fontSize: 32,
+    fontWeight: '600',
+    textAlign: 'center',
+    lineHeight: 36,
+  },
+  indicatorContainer: {
+    position: 'absolute',
+    bottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  indicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    marginHorizontal: 4,
+  },
+  
   tabText: {
     fontSize: 16,
     fontWeight: "700",
