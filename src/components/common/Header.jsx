@@ -1,19 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useFonts, Poppins_700Bold } from "@expo-google-fonts/poppins";
+import logo from "../../../assets/images/snapTrade.png";
 
 const Header = () => {
   const navigation = useNavigation();
-
-  let [fontsLoaded] = useFonts({
-    Poppins_700Bold,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
 
   return (
     <View style={styles.header}>
@@ -21,7 +13,12 @@ const Header = () => {
         <Ionicons name="menu" size={24} color="#FFFFFF" />
       </TouchableOpacity>
 
-      <Text style={styles.headerTitle}>SnapTrade</Text>
+      <Image
+        source={logo}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+
       <TouchableOpacity onPress={() => navigation.navigate("User")}>
         <Ionicons name="person-outline" size={24} color="#FFFFFF" />
       </TouchableOpacity>
@@ -35,15 +32,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 8,
     backgroundColor: "#0D2C54",
     borderBottomColor: "#1a3d69",
+    height: 60, // Increased from 60 to accommodate larger logo
   },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: "Poppins_700Bold",
-    color: "#FFFFFF",
-    letterSpacing: 0.5,
+  logo: {
+    width: 150,  // Increased from 100
+    height: 120,  // Increased from 40
+    marginHorizontal: -50, // Add negative margin to compensate for larger width
   },
 });
 

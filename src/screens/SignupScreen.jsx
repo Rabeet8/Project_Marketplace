@@ -14,6 +14,7 @@ import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { Picker } from '@react-native-picker/picker';
 import { BASE_URL } from "@/app/environment";
+import logo from "../../assets/images/snapTrade.png";
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -99,7 +100,7 @@ export default function SignUpScreen({ navigation }) {
         {/* Logo Section */}
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../assets/images/logofinal.png")}
+            source={logo}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -254,10 +255,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 20,
     paddingHorizontal: 20,
+    height: 160, // Added fixed height to contain the logo
+    overflow: 'hidden', // Prevent logo from overflowing
   },
   logo: {
-    width: 150,
-    height: 120,
+    width: 300,  // Increased width
+    height: 240, // Increased height
+    marginTop: -40, // Negative margin to adjust vertical position
+    marginBottom: -40, // Negative margin to adjust vertical position
   },
   tabsOuterContainer: {
     paddingHorizontal: 20,

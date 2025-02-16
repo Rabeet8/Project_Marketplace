@@ -308,7 +308,7 @@ const AdUploadScreenCOPY = () => {
             <CheckCircle2 color="#2E7D32" size={65} />
           </View>
           <Text style={styles.successModalTitle}>Success!</Text>
-          <Text style={styles.successModalText}>Your ad has been created successfully</Text>
+          <Text style={styles.successModalText}>Your Ad has been created successfully</Text>
         </View>
       </View>
     </Modal>
