@@ -8,14 +8,19 @@ const AdsListings = () => {
   const navigation = useNavigation();
   const route = useRoute();
   
-  const { categoryName = 'All Items' } = route.params || {};
+  const { categoryId = 'all', categoryName = 'All Items' } = route.params || {};
   const { data: ads, loading, error } = useFetchAds();
 
   const handleAdPress = (ad) => {
     navigation.navigate('SingleAdDetails', { ad });
   };
 
-  const filteredAds = categoryName === 'All' ? ads : ads.filter(ad => ad.category_name === categoryName);
+  const filteredAds = React.useMemo(() => {
+    if (!ads) return [];
+    if (categoryId === 'all') return ads;
+    
+    return ads.filter(ad => ad.category_id === categoryId);
+  }, [ads, categoryId]);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0D2C54" style={styles.loadingIndicator} />;
