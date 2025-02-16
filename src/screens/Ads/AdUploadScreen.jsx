@@ -12,7 +12,7 @@ import {
   ActivityIndicator 
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { X, CheckCircle2, XCircle } from 'lucide-react-native';
+import { X, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 
@@ -354,11 +354,21 @@ const AdUploadScreenCOPY = () => {
     <ScrollView 
       style={styles.container}
       keyboardShouldPersistTaps="handled"
+      contentContainerStyle={styles.scrollContent} // Add this line
     >
       <SuccessModal />
       <ErrorModal />
       <LoadingModal />
-      <Text style={styles.heading}>Add an item</Text>
+      
+      <View style={styles.headerContainer}>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('Home')}
+          style={styles.backButton}
+        >
+          <ArrowLeft size={28} color="#0D2C54" strokeWidth={2.5} />
+        </TouchableOpacity>
+        <Text style={styles.heading}>Add an item</Text>
+      </View>
 
       <TextInput
         style={styles.input}
@@ -493,14 +503,28 @@ const AdUploadScreenCOPY = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: 'white',
   },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 30, // Add extra padding at the bottom
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+    marginTop: 8,
+  },
+  backButton: {
+    padding: 8,
+    marginRight: 12,
+  },
   heading: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 16,
     color: '#0D2C54',
+    letterSpacing: 0.5,
+    flex: 1,
   },
   input: {
     borderWidth: 1,

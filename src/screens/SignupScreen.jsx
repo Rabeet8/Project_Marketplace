@@ -8,11 +8,12 @@ import {
   SafeAreaView,
   Image,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
-import { Picker } from '@react-native-picker/picker';
+import { X } from 'lucide-react-native';
 import { BASE_URL } from "@/app/environment";
 import logo from "../../assets/images/snapTrade.png";
 
@@ -30,6 +31,58 @@ export default function SignUpScreen({ navigation }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isGenderModalVisible, setIsGenderModalVisible] = useState(false);
+
+  const genderOptions = [
+    { key: 'male', label: 'Male' },
+    { key: 'female', label: 'Female' },
+    
+  ];
+
+  const GenderModal = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isGenderModalVisible}
+      onRequestClose={() => setIsGenderModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Select Gender</Text>
+            <TouchableOpacity 
+              style={styles.closeButton}
+              onPress={() => setIsGenderModalVisible(false)}
+            >
+              <X color="#0D2C54" size={24} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalList}>
+            {genderOptions.map((item) => (
+              <TouchableOpacity
+                key={item.key}
+                style={[
+                  styles.modalItem,
+                  gender === item.key && styles.selectedModalItem
+                ]}
+                onPress={() => {
+                  setGender(item.key);
+                  setIsGenderModalVisible(false);
+                }}
+              >
+                <Text style={[
+                  styles.modalItemText,
+                  gender === item.key && styles.selectedModalItemText
+                ]}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   const handleSignUp = () => {
     if (!email || !password || !confirmPassword || !firstName || !lastName || !phoneNumber || !gender || !city || !dateOfBirth) {
@@ -151,17 +204,17 @@ export default function SignUpScreen({ navigation }) {
               keyboardType="phone-pad"
               placeholderTextColor="#999"
             />
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={gender}
-                style={styles.picker}
-                onValueChange={(itemValue) => setGender(itemValue)}
-              >
-                <Picker.Item label="Select Gender" value="" />
-                <Picker.Item label="Male" value="male" />
-                <Picker.Item label="Female" value="female" />
-              </Picker>
-            </View>
+            <TouchableOpacity 
+              style={styles.selectButton}
+              onPress={() => setIsGenderModalVisible(true)}
+            >
+              <Text style={[
+                styles.selectButtonText,
+                !gender && styles.placeholderText
+              ]}>
+                {gender ? genderOptions.find(g => g.key === gender)?.label : 'Select Gender'}
+              </Text>
+            </TouchableOpacity>
             <TextInput
               style={styles.input}
               placeholder="City"
@@ -239,6 +292,7 @@ export default function SignUpScreen({ navigation }) {
           </View>
         </KeyboardAwareScrollView>
       </View>
+      <GenderModal />
     </SafeAreaView>
   );
 }
@@ -299,7 +353,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingTop: 80,
+    paddingTop: 50,
   },
   title: {
     fontSize: 24,
@@ -379,5 +433,68 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginBottom: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    minHeight: 300,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#0D2C54',
+  },
+  closeButton: {
+    padding: 4,
+  },
+  modalList: {
+    padding: 20,
+  },
+  modalItem: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: '#F5F5F5',
+  },
+  selectedModalItem: {
+    backgroundColor: '#0D2C54',
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#0D2C54',
+  },
+  selectedModalItemText: {
+    color: 'white',
+  },
+  selectButton: {
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    justifyContent: 'center',
+  },
+  selectButtonText: {
+    fontSize: 16,
+    color: '#000',
+  },
+  placeholderText: {
+    color: '#999',
   },
 });

@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingTop: 80,
+    paddingTop: 50,
   },
   title: {
     fontSize: 24,
