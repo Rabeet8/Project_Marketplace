@@ -16,6 +16,8 @@ import { X, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 
+import {uploadImageAsync} from './utility.js';
+
 const API_URL = 'https://cartkro.azurewebsites.net/';
 
 const AdUploadScreenCOPY = () => {
@@ -161,8 +163,25 @@ const AdUploadScreenCOPY = () => {
       if (!title || !description || !category || !brand || !model || !city || !price) {
         throw new Error('Please fill in all required fields');
       }
+  
+      // Upload images and get URLs
+      const uploadedImageUrls = [];
+      
+      if (images.length === 0) {
+        throw new Error('Please add at least one image');
+      }
+  
+      // Upload all images to Firebase
+      for (const imageUri of images) {
+        try {
+          const imageUrl = await uploadImageAsync(imageUri);
+          uploadedImageUrls.push(imageUrl);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          throw new Error('Failed to upload images. Please try again.');
+        }
+      }
 
-      let imagesX = ["https://firebasestorage.googleapis.com/v0/b/pokemon-25f5d.firebasestorage.app/o/mob1.jpeg?alt=media&token=28a3d9b2-d993-4f8a-8ada-19d194b95d24"]
       const payload = {
         title,
         description,
@@ -172,13 +191,12 @@ const AdUploadScreenCOPY = () => {
         rating: parseInt(rating),
         city,
         price: parseFloat(price),
-        user_id: 1, // Replace with actual user ID
-        imageURLs: imagesX,
-        timestamp: new Date().toISOString(), // Add current timestamp in ISO format
-        prompt: "Rate the product out of 10, also give the description and return response in format json with keys (rating, description), this description will be used in marketplace ads so create the description about the product that will be used in ads like an amazon.",
+        user_id: 8, // Replace with actual user ID
+        imageURLs: uploadedImageUrls, // Use the array of uploaded image URLs
+        timestamp: new Date().toISOString(),
+        prompt: "Analyze the condition of this product from the image and describe it without mentioning the product name. Keep it neutral, avoiding an advertisement tone. Focus on visible signs of use, functionality, and overall condition. Give a rating out of 10 based on your analysis. return response in format json with keys (rating, description).",
         longitude: location.coords.longitude?.toString() || "0",
         latitude: location.coords.latitude?.toString() || "0",
-    
       };
 
       const response = await fetch(`${API_URL}/ads`, {

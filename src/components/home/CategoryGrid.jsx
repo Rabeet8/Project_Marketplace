@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
 
 const categories = [
   { id: "1", name: "Laptops", icon: "laptop-outline" },
@@ -20,6 +21,12 @@ const categories = [
 ];
 
 const CategoryGrid = () => {
+  const navigation = useNavigation();
+
+  const handleCategoryPress = (category) => {
+    navigation.navigate("AdsListings", { categoryName: category.name });
+  };
+
   return (
     <FlatList
       data={categories}
@@ -27,7 +34,7 @@ const CategoryGrid = () => {
       numColumns={4}
       contentContainerStyle={styles.gridContainer}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity style={styles.card} onPress={() => handleCategoryPress(item)}>
           <Ionicons name={item.icon} size={30} color="#0D2C54" />
           <Text style={styles.cardText}>{item.name}</Text>
         </TouchableOpacity>

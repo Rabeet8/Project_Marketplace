@@ -42,7 +42,7 @@ export default function App() {
   return (
     <NavigationIndependentTree>
       <NavigationContainer >
-        <Stack.Navigator initialRouteName="LoginScreen">
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="LoginScreen"
             component={LoginScreen}

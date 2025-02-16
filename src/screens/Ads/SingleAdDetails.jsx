@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -135,10 +135,9 @@ const SingleAdDetails = () => {
                 <View style={styles.userInfo}>
                   <Image source={logo1} style={styles.profileImage} />
                   <View style={styles.userDetails}>
-                    <Text style={styles.username}>{ad.username}</Text>
-                    <Text style={styles.memberSince}>Member since {ad.memberSince}</Text>
+                    <Text style={styles.username}>{ad.user.f_name}</Text>
                   </View>
-                  <Text style={styles.serviceBadge}>{categoryName || 'Item'}</Text>
+                  <Text style={styles.serviceBadge}>{ad.category_name}</Text>
                 </View>
 
                 <View style={styles.infoSection}>
@@ -146,12 +145,28 @@ const SingleAdDetails = () => {
                     <Text style={styles.detailLabel}>Location</Text>
                     <Text style={styles.detailValue}>{ad.city}</Text>
                   </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Price</Text>
+                    <Text style={styles.detailValue}>Rs. {ad.price}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Model</Text>
+                    <Text style={styles.detailValue}>{ad.model}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Rating</Text>
+                    <Text style={styles.detailValue}>{ad.rating}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Posted On</Text>
+                    <Text style={styles.detailValue}>{ad.timestamp}</Text>
+                  </View>
                 </View>
 
                 <View style={styles.descriptionContainer}>
                   <Text style={styles.sectionTitle}>Description</Text>
                   <TouchableOpacity onPress={() => showDescription(ad.description)}>
-                     <Text 
+                    <Text 
                       numberOfLines={2} 
                       ellipsizeMode="tail"
                       style={styles.descriptionText}
@@ -161,13 +176,11 @@ const SingleAdDetails = () => {
                     <Text style={styles.readMore}>Read More</Text>
                   </TouchableOpacity>
                 </View>
-
-                <Text style={styles.price}>Rs. {ad.price}</Text>
               </View>
             </View>
           )}
 
-          {activeTab === "ai" && aiData && (
+          {activeTab === "ai" && (
             <View style={styles.detailsContainer}>
               <View style={styles.imageContainer}>
                 <Image source={carouselImages[currentImageIndex]} style={styles.image} />
@@ -206,51 +219,58 @@ const SingleAdDetails = () => {
                   <View style={styles.userDetails}>
                     <Text style={styles.username}>AI Assistant</Text>
                   </View>
-                  <Text style={styles.serviceBadge}>AI</Text>
+                  <Text style={styles.serviceBadge}>{ad.category_name}</Text>
                 </View>
 
                 <View style={styles.infoSection}>
-                  <Text style={styles.detailValue}>{aiData.city}</Text>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Location</Text>
+                    <Text style={styles.detailValue}>{ad.city}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Price</Text>
+                    <Text style={styles.detailValue}>Rs. {ad.price}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Model</Text>
+                    <Text style={styles.detailValue}>{ad.model}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Rating</Text>
+                    <Text style={styles.detailValue}>{ad.ai_rating}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Posted On</Text>
+                    <Text style={styles.detailValue}>{ad.timestamp}</Text>
+                  </View>
                 </View>
 
                 <View style={styles.descriptionContainer}>
                   <Text style={styles.sectionTitle}>AI Generated Description</Text>
-                  <TouchableOpacity onPress={() => showDescription(aiData.gen_description)}>
+                  <TouchableOpacity onPress={() => showDescription(ad.ai_description)}>
                     <Text 
-                      numberOfLines={1}
+                      numberOfLines={2} 
                       ellipsizeMode="tail"
                       style={styles.descriptionText}
                     >
-                      {aiData.gen_description}
+                      {ad.ai_description}
                     </Text>
                     <Text style={styles.readMore}>Read More</Text>
                   </TouchableOpacity>
                 </View>
-
-                <Text style={styles.price}>Rs: {aiData.gen_rating}</Text>
               </View>
-            </View>
-          )}
-
-          {activeTab === "ai" && !aiData && (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>
-                AI data not available for this ad.
-              </Text>
             </View>
           )}
         </ScrollView>
       </View>
 
-      {(activeTab === "user" || (activeTab === "ai" && aiData)) && (
-        <View style={styles.bottomButtonContainer}>
-          <TouchableOpacity style={styles.callButton}>
-            <Text style={styles.callButtonText}>
-              {activeTab === "user" ? "Call Seller" : "Call Seller"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <View style={styles.bottomButtonContainer}>
+        <TouchableOpacity style={styles.callButton}>
+          <Text style={styles.callButtonText}>
+            {activeTab === "user" ? "Call Seller" : "Get Help"}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       <Modal
         animationType="slide"
@@ -291,18 +311,18 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginVertical: 10, // reduced from 15
-    paddingHorizontal: 15, // reduced from 20
+    marginVertical: 10,
+    paddingHorizontal: 15,
   },
   tabButton: {
-    paddingVertical: 8, // reduced from 12
-    paddingHorizontal: 25, // reduced from 35
+    paddingVertical: 8,
+    paddingHorizontal: 25,
     borderWidth: 1,
     borderColor: "#0D2C54",
-    borderRadius: 20, // reduced from 30
-    marginHorizontal: 8, // reduced from 10
+    borderRadius: 20,
+    marginHorizontal: 8,
     backgroundColor: '#fff',
-    elevation: 3, // Android shadow
+    elevation: 3,
   },
   activeTab: {
     backgroundColor: "#0D2C54",
@@ -358,38 +378,38 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     backgroundColor: "#fff",
-    borderRadius: 15, // reduced from 20
-    margin: 10, // reduced from 15
-    elevation: 5, // Android shadow
+    borderRadius: 15,
+    margin: 10,
+    elevation: 5,
   },
   imageContainer: {
-    borderTopLeftRadius: 15, // reduced from 20
-    borderTopRightRadius: 15, // reduced from 20
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     overflow: 'hidden',
     elevation: 3,
   },
   image: {
     width: "100%",
-    height: 200, // reduced from 280
+    height: 200,
     resizeMode: "cover",
   },
   contentContainer: {
-    padding: 15, // reduced from 20
-    paddingBottom: 60, // reduced from 80
+    padding: 15,
+    paddingBottom: 60,
   },
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 10, // reduced from 15
+    marginVertical: 10,
     backgroundColor: "#f8f9fa",
-    padding: 12, // reduced from 15
+    padding: 12,
     borderRadius: 15,
-    elevation: 2, // Android shadow
+    elevation: 2,
   },
   profileImage: {
-    width: 50, // reduced from 60
-    height: 50, // reduced from 60
-    borderRadius: 25, // reduced from 30
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     borderWidth: 2,
     borderColor: "#0D2C54",
   },
@@ -419,9 +439,9 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     backgroundColor: "#f8f9fa",
-    padding: 12, // reduced from 15
+    padding: 12,
     borderRadius: 15,
-    marginVertical: 10, // reduced from 15
+    marginVertical: 10,
   },
   sectionTitle: {
     fontSize: 20,
@@ -436,35 +456,35 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   price: {
-    fontSize: 24, // reduced from 28
-    fontWeight: "700", // reduced from 800
+    fontSize: 24,
+    fontWeight: "700",
     color: "#0D2C54",
-    marginVertical: 10, // reduced from 15
+    marginVertical: 10,
     textShadowColor: 'rgba(0, 0, 0, 0.1)',
     textShadowOffset: {width: 0, height: 1},
     textShadowRadius: 2,
   },
   callButton: {
     backgroundColor: "#0D2C54",
-    paddingVertical: 10, // reduced from 12
-    paddingHorizontal: 30, // reduced from 40
-    borderRadius: 25, // reduced from 30
-    width: '50%', // reduced from 80%
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    width: '50%',
     alignItems: "center",
     elevation: 4,
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 8, // reduced from 10
+    gap: 8,
   },
   callButtonText: {
     color: '#FFFFFF',
-    fontSize: 14, // reduced from 16
-    fontWeight: '600', // reduced from 700
+    fontSize: 14,
+    fontWeight: '600',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   infoSection: {
-    marginVertical: 8, // reduced from 10
+    marginVertical: 8,
   },
   detailRow: {
     flexDirection: "row",
@@ -496,7 +516,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 15, // reduced from 20
+    padding: 15,
   },
   readMore: {
     color: '#0D2C54',

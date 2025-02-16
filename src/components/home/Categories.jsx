@@ -20,7 +20,7 @@ const Categories = () => {
   ];
 
   const handleCategoryPress = (category) => {
-    navigation.navigate("AdsListings", { category });
+    navigation.navigate("AdsListings", { categoryName: category.name });
   };
 
   return (
@@ -30,7 +30,7 @@ const Categories = () => {
           <TouchableOpacity
             key={index}
             style={styles.categoryButton}
-            onPress={() => handleCategoryPress(category.id)}
+            onPress={() => handleCategoryPress(category)}
           >
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>

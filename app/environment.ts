@@ -1,1 +1,1 @@
-export const BASE_URL = 'https://cartkro.azurewebsites.net/';
+export const BASE_URL = 'https://cartkro.azurewebsites.net';
