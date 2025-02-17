@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -10,7 +10,6 @@ import {
   Modal,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import block from "../../../assets/images/block.jpg";
 import logo1 from "../../../assets/images/logo1.png";
 import profile from "../../../assets/images/profile.png";
 
@@ -20,11 +19,23 @@ import BottomNavigator from "../../components/common/BottomNavigator";
 const SingleAdDetails = () => {
   const route = useRoute();
   const { ad, aiData } = route.params;
+  
+  // Add debug logs to check the data
+  console.log('Full ad object:', ad);
+  console.log('Raw timestamp:', ad.timestamp);
+  
+  // Transform the images array to get just the URLs
+  const carouselImages = ad.images ? ad.images.map(img => img.img_url) : [];
+  
+  // Add debug log to verify the transformation
+  console.log('Original images:', ad.images);
+  console.log('Transformed carousel images:', carouselImages);
+
   const [categoryName, setCategoryName] = useState("");
-  const carouselImages = [block, profile];
   const API_URL = 'https://cartkro.azurewebsites.net';
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
   useEffect(() => {
     fetchCategoryName();
@@ -67,209 +78,294 @@ const SingleAdDetails = () => {
     }
   };
 
+  const openImagePreview = () => {
+    setIsImageModalVisible(true);
+  };
 
   const showDescription = (description) => {
     setCurrentDescription(description);
     setModalVisible(true);
   };
 
+  // Add debug log to check timestamp
+  console.log('Ad data timestamp:', ad.timestamp);
+
+  // Update the formatTimestamp function
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) {
+      console.log('Timestamp is null or undefined');
+      return 'Not available';
+    }
+    
+    try {
+      // If timestamp is already formatted, return as is
+      if (typeof timestamp === 'string' && 
+          (timestamp.includes(',') || timestamp.includes('at'))) {
+        return timestamp;
+      }
+
+      // Try parsing the date
+      const date = new Date(timestamp);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        // If parsing failed, return the original string
+        return timestamp;
+      }
+
+      // Format the date
+      return date.toLocaleDateString('en-US', {
+        timeZone: 'Asia/Karachi',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }) + ' ' + date.toLocaleTimeString('en-US', {
+        timeZone: 'Asia/Karachi',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      return timestamp || 'Not available';
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              activeTab === "user" ? styles.activeTab : null,
-            ]}
-            onPress={() => toggleTab("user")}
-          >
-            <Text style={[styles.tabText, activeTab === "user" && styles.activeTabText]}>User Details</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              activeTab === "ai" ? styles.activeTab : null,
-            ]}
-            onPress={() => toggleTab("ai")}
-          >
-            <Text style={[styles.tabText, activeTab === "ai" && styles.activeTabText]}>AI Analysis</Text>
-          </TouchableOpacity>
-        </View>
-
         <ScrollView style={styles.scrollView}>
-          {activeTab === "user" && (
-            <View style={styles.detailsContainer}>
-             <View style={styles.imageContainer}>
-                <Image source={carouselImages[currentImageIndex]} style={styles.image} />
-                
-                {/* Navigation arrows for the carousel */}
-                <TouchableOpacity 
-                  style={[styles.carouselButton, styles.leftButton]} 
-                  onPress={goToPreviousImage}
-                >
-                  <Text style={styles.carouselButtonText}>‹</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={[styles.carouselButton, styles.rightButton]} 
-                  onPress={goToNextImage}
-                >
-                  <Text style={styles.carouselButtonText}>›</Text>
-                </TouchableOpacity>
-                
-                {/* Image indicators */}
-                <View style={styles.indicatorContainer}>
-                  {carouselImages.map((_, index) => (
-                    <View 
-                      key={index} 
-                      style={[
-                        styles.indicator, 
-                        index === currentImageIndex && styles.activeIndicator
-                      ]} 
-                    />
-                  ))}
+          <View style={styles.tabContainer}>
+            <TouchableOpacity
+              style={[
+                styles.tabButton,
+                activeTab === "user" ? styles.activeTab : null,
+              ]}
+              onPress={() => toggleTab("user")}
+            >
+              <Text style={[styles.tabText, activeTab === "user" && styles.activeTabText]}>User Details</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.tabButton,
+                activeTab === "ai" ? styles.activeTab : null,
+              ]}
+              onPress={() => toggleTab("ai")}
+            >
+              <Text style={[styles.tabText, activeTab === "ai" && styles.activeTabText]}>AI Analysis</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.scrollView}>
+            {activeTab === "user" && (
+              <View style={styles.detailsContainer}>
+                <View style={styles.imageContainer}>
+                  {carouselImages.length > 0 ? (
+                    <>
+                      <TouchableOpacity 
+                        activeOpacity={0.9}
+                        onPress={openImagePreview}
+                      >
+                        <Image 
+                          source={{ uri: carouselImages[currentImageIndex] }} 
+                          style={styles.image}
+                        />
+                      </TouchableOpacity>
+                      
+                      {carouselImages.length > 1 && (
+                        <>
+                          <TouchableOpacity 
+                            style={[styles.carouselButton, styles.leftButton]} 
+                            onPress={goToPreviousImage}
+                          >
+                            <Text style={styles.carouselButtonText}>‹</Text>
+                          </TouchableOpacity>
+                          
+                          <TouchableOpacity 
+                            style={[styles.carouselButton, styles.rightButton]} 
+                            onPress={goToNextImage}
+                          >
+                            <Text style={styles.carouselButtonText}>›</Text>
+                          </TouchableOpacity>
+                          
+                          <View style={styles.indicatorContainer}>
+                            {carouselImages.map((_, index) => (
+                              <View 
+                                key={index} 
+                                style={[
+                                  styles.indicator, 
+                                  index === currentImageIndex && styles.activeIndicator
+                                ]} 
+                              />
+                            ))}
+                          </View>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <View style={styles.noImageContainer}>
+                      <Text style={styles.noImageText}>No images available</Text>
+                    </View>
+                  )}
+                </View>
+                <View style={styles.contentContainer}>
+                  <View style={styles.userInfo}>
+                    <Image source={profile} style={styles.profileImage} />
+                    <View style={styles.userDetails}>
+                      <Text style={styles.username}>{ad.user.f_name}</Text>
+                    </View>
+                    <Text style={styles.serviceBadge}>{ad.category_name}</Text>
+                  </View>
+
+                  <View style={styles.infoSection}>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Location</Text>
+                      <Text style={styles.detailValue}>{ad.city}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Price</Text>
+                      <Text style={styles.detailValue}>Rs. {ad.price}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Model</Text>
+                      <Text style={styles.detailValue}>{ad.model}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Rating</Text>
+                      <Text style={styles.detailValue}>{ad.rating}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Posted On</Text>
+                      <Text style={styles.detailValue}>{formatTimestamp(ad.timestamp)}</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.descriptionContainer}>
+                    <Text style={styles.sectionTitle}>Description</Text>
+                    <TouchableOpacity onPress={() => showDescription(ad.description)}>
+                      <Text 
+                        numberOfLines={2} 
+                        ellipsizeMode="tail"
+                        style={styles.descriptionText}
+                      >
+                        {ad.description}
+                      </Text>
+                      <Text style={styles.readMore}>Read More</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-              <View style={styles.contentContainer}>
-                <View style={styles.userInfo}>
-                  <Image source={logo1} style={styles.profileImage} />
-                  <View style={styles.userDetails}>
-                    <Text style={styles.username}>{ad.user.f_name}</Text>
-                  </View>
-                  <Text style={styles.serviceBadge}>{ad.category_name}</Text>
-                </View>
+            )}
 
-                <View style={styles.infoSection}>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Location</Text>
-                    <Text style={styles.detailValue}>{ad.city}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Price</Text>
-                    <Text style={styles.detailValue}>Rs. {ad.price}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Model</Text>
-                    <Text style={styles.detailValue}>{ad.model}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Rating</Text>
-                    <Text style={styles.detailValue}>{ad.rating}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Posted On</Text>
-                    <Text style={styles.detailValue}>{ad.timestamp}</Text>
-                  </View>
+            {activeTab === "ai" && (
+              <View style={styles.detailsContainer}>
+                <View style={styles.imageContainer}>
+                  {carouselImages.length > 0 ? (
+                    <>
+                      <TouchableOpacity 
+                        activeOpacity={0.9}
+                        onPress={openImagePreview}
+                      >
+                        <Image 
+                          source={{ uri: carouselImages[currentImageIndex] }} 
+                          style={styles.image}
+                        />
+                      </TouchableOpacity>
+                      
+                      {carouselImages.length > 1 && (
+                        <>
+                          <TouchableOpacity 
+                            style={[styles.carouselButton, styles.leftButton]} 
+                            onPress={goToPreviousImage}
+                          >
+                            <Text style={styles.carouselButtonText}>‹</Text>
+                          </TouchableOpacity>
+                          
+                          <TouchableOpacity 
+                            style={[styles.carouselButton, styles.rightButton]} 
+                            onPress={goToNextImage}
+                          >
+                            <Text style={styles.carouselButtonText}>›</Text>
+                          </TouchableOpacity>
+                          
+                          <View style={styles.indicatorContainer}>
+                            {carouselImages.map((_, index) => (
+                              <View 
+                                key={index} 
+                                style={[
+                                  styles.indicator, 
+                                  index === currentImageIndex && styles.activeIndicator
+                                ]} 
+                              />
+                            ))}
+                          </View>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <View style={styles.noImageContainer}>
+                      <Text style={styles.noImageText}>No images available</Text>
+                    </View>
+                  )}
                 </View>
+                <View style={styles.contentContainer}>
+                  <View style={styles.userInfo}>
+                    <Image source={aiLogo} style={styles.profileImage} />
+                    <View style={styles.userDetails}>
+                      <Text style={styles.username}>AI Assistant</Text>
+                    </View>
+                    <Text style={styles.serviceBadge}>{ad.category_name}</Text>
+                  </View>
 
-                <View style={styles.descriptionContainer}>
-                  <Text style={styles.sectionTitle}>Description</Text>
-                  <TouchableOpacity onPress={() => showDescription(ad.description)}>
-                    <Text 
-                      numberOfLines={2} 
-                      ellipsizeMode="tail"
-                      style={styles.descriptionText}
-                    >
-                      {ad.description}
-                    </Text>
-                    <Text style={styles.readMore}>Read More</Text>
-                  </TouchableOpacity>
+                  <View style={styles.infoSection}>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Location</Text>
+                      <Text style={styles.detailValue}>{ad.city}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Price</Text>
+                      <Text style={styles.detailValue}>Rs. {ad.price}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Model</Text>
+                      <Text style={styles.detailValue}>{ad.model}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Rating</Text>
+                      <Text style={styles.detailValue}>{ad.ai_rating}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Posted On</Text>
+                      <Text style={styles.detailValue}>{formatTimestamp(ad.timestamp)}</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.descriptionContainer}>
+                    <Text style={styles.sectionTitle}>AI Generated Description</Text>
+                    <TouchableOpacity onPress={() => showDescription(ad.ai_description)}>
+                      <Text 
+                        numberOfLines={2} 
+                        ellipsizeMode="tail"
+                        style={styles.descriptionText}
+                      >
+                        {ad.ai_description}
+                      </Text>
+                      <Text style={styles.readMore}>Read More</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
+            )}
+          </ScrollView>
 
-          {activeTab === "ai" && (
-            <View style={styles.detailsContainer}>
-              <View style={styles.imageContainer}>
-                <Image source={carouselImages[currentImageIndex]} style={styles.image} />
-                
-                {/* Navigation arrows for the carousel */}
-                <TouchableOpacity 
-                  style={[styles.carouselButton, styles.leftButton]} 
-                  onPress={goToPreviousImage}
-                >
-                  <Text style={styles.carouselButtonText}>‹</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={[styles.carouselButton, styles.rightButton]} 
-                  onPress={goToNextImage}
-                >
-                  <Text style={styles.carouselButtonText}>›</Text>
-                </TouchableOpacity>
-                
-                {/* Image indicators */}
-                <View style={styles.indicatorContainer}>
-                  {carouselImages.map((_, index) => (
-                    <View 
-                      key={index} 
-                      style={[
-                        styles.indicator, 
-                        index === currentImageIndex && styles.activeIndicator
-                      ]} 
-                    />
-                  ))}
-                </View>
-              </View>
-              <View style={styles.contentContainer}>
-                <View style={styles.userInfo}>
-                  <Image source={aiLogo} style={styles.profileImage} />
-                  <View style={styles.userDetails}>
-                    <Text style={styles.username}>AI Assistant</Text>
-                  </View>
-                  <Text style={styles.serviceBadge}>{ad.category_name}</Text>
-                </View>
-
-                <View style={styles.infoSection}>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Location</Text>
-                    <Text style={styles.detailValue}>{ad.city}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Price</Text>
-                    <Text style={styles.detailValue}>Rs. {ad.price}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Model</Text>
-                    <Text style={styles.detailValue}>{ad.model}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Rating</Text>
-                    <Text style={styles.detailValue}>{ad.ai_rating}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Posted On</Text>
-                    <Text style={styles.detailValue}>{ad.timestamp}</Text>
-                  </View>
-                </View>
-
-                <View style={styles.descriptionContainer}>
-                  <Text style={styles.sectionTitle}>AI Generated Description</Text>
-                  <TouchableOpacity onPress={() => showDescription(ad.ai_description)}>
-                    <Text 
-                      numberOfLines={2} 
-                      ellipsizeMode="tail"
-                      style={styles.descriptionText}
-                    >
-                      {ad.ai_description}
-                    </Text>
-                    <Text style={styles.readMore}>Read More</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          )}
+          <View style={styles.bottomButtonContainer}>
+            <TouchableOpacity style={styles.callButton}>
+              <Text style={styles.callButtonText}>
+                {activeTab === "user" ? "Call Seller" : "Chat Now"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
-      </View>
-
-      <View style={styles.bottomButtonContainer}>
-        <TouchableOpacity style={styles.callButton}>
-          <Text style={styles.callButtonText}>
-            {activeTab === "user" ? "Call Seller" : "Get Help"}
-          </Text>
-        </TouchableOpacity>
       </View>
 
       <Modal
@@ -288,6 +384,48 @@ const SingleAdDetails = () => {
           >
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isImageModalVisible}
+        onRequestClose={() => setIsImageModalVisible(false)}
+      >
+        <View style={styles.imageModalOverlay}>
+          <TouchableOpacity
+            style={styles.closeImageButton}
+            onPress={() => setIsImageModalVisible(false)}
+          >
+            <Text style={styles.closeImageButtonText}>✕</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.imageModalContent}>
+            <Image
+              source={{ uri: carouselImages[currentImageIndex] }}
+              style={styles.fullScreenImage}
+              resizeMode="contain"
+            />
+            
+            {carouselImages.length > 1 && (
+              <>
+                <TouchableOpacity 
+                  style={[styles.modalCarouselButton, styles.modalLeftButton]} 
+                  onPress={goToPreviousImage}
+                >
+                  <Text style={styles.modalCarouselButtonText}>‹</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.modalCarouselButton, styles.modalRightButton]} 
+                  onPress={goToNextImage}
+                >
+                  <Text style={styles.modalCarouselButtonText}>›</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
         </View>
       </Modal>
 
@@ -332,7 +470,7 @@ const styles = StyleSheet.create({
   carouselButton: {
     position: 'absolute',
     top: '40%',
-    backgroundColor: '#0D2C54',  // Single solid color matching theme
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',  // Changed to semi-transparent white
     borderRadius: 25,
     width: 40,
     height: 40,
@@ -347,7 +485,7 @@ const styles = StyleSheet.create({
     right: 15,
   },
   carouselButtonText: {
-    color: 'white',
+    color: '#0D2C54',  // Changed to theme color
     fontSize: 32,
     fontWeight: '600',
     textAlign: 'center',
@@ -480,8 +618,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
+    letterSpacing: 1,
+    // textTransform: 'uppercase',
   },
   infoSection: {
     marginVertical: 8,
@@ -503,14 +641,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   bottomButtonContainer: {
-    position: 'absolute',
-    bottom: 75,
-    left: 0,
-    right: 0,
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    zIndex: 1,
+    paddingVertical: 20,
     alignItems: 'center',
+    marginBottom: 60, // Space for bottom navigator
   },
   errorContainer: {
     flex: 1,
@@ -559,6 +693,72 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
+  },
+  noImageContainer: {
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+  },
+  noImageText: {
+    color: '#666',
+    fontSize: 16,
+  },
+  activeIndicator: {
+    backgroundColor: '#0D2C54',
+    width: 10,
+    height: 10,
+  },
+  imageModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageModalContent: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '90%',
+  },
+  closeImageButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    zIndex: 1,
+    padding: 10,
+  },
+  closeImageButtonText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  modalCarouselButton: {
+    position: 'absolute',
+    top: '50%',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalLeftButton: {
+    left: 20,
+  },
+  modalRightButton: {
+    right: 20,
+  },
+  modalCarouselButtonText: {
+    color: '#fff',
+    fontSize: 40,
+    fontWeight: '600',
+    textAlign: 'center',
+    lineHeight: 44,
   },
 });
 
