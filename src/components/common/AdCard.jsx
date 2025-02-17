@@ -2,6 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const AdCard = ({ ad, onPress }) => {
+  // Transform the images array to get just the URLs
+  const adImages = ad.images ? ad.images.map(img => img.img_url) : [];
+  
+ 
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.cardContainer}>
@@ -144,6 +149,11 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     fontSize: 14,
+  },
+  noImage: {
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
