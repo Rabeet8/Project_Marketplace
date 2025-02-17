@@ -15,7 +15,7 @@ import User from "../src/screens/UserScreens/User"
 import MyAds from "../src/screens/UserScreens/MyAds.jsx";
 
 // import AdUploadScreenCopy from "../src/screens/Ads/AdUploadScreenCOPY.jsx"
-// import ChatScreen from "../src/screens/ChatScreen.jsx"
+import ChatScreen from "../src/screens/ChatScreen.jsx"
 
 SplashScreen.preventAutoHideAsync(); 
 
@@ -92,11 +92,11 @@ export default function App() {
             component={AdUploadScreenCopy}
             options={{ headerShown: false }}
           /> */}
-          {/* <Stack.Screen
-            name="Chat"
+          <Stack.Screen
+            name="ChatScreen"
             component={ChatScreen}
             options={{ headerShown: false }}
-          /> */}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </NavigationIndependentTree>

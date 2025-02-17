@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   Modal,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import logo1 from "../../../assets/images/logo1.png";
 import profile from "../../../assets/images/profile.png";
 
@@ -18,6 +18,7 @@ import BottomNavigator from "../../components/common/BottomNavigator";
 
 const SingleAdDetails = () => {
   const route = useRoute();
+    const navigation = useNavigation();
   const { ad, aiData } = route.params;
   
   // Add debug logs to check the data
@@ -128,6 +129,20 @@ const SingleAdDetails = () => {
     } catch (error) {
       console.error('Error formatting timestamp:', error);
       return timestamp || 'Not available';
+    }
+  };
+
+  const handleBottomButtonPress = () => {
+    if (activeTab === "ai") {
+      navigation.navigate('ChatScreen', {
+        userId: 1,  // Static user ID
+        userName: "Seller",  // Static seller name
+        adId: 1,    // Static ad ID
+        adTitle: "Product"  // Static product title
+      });
+    } else {
+      // Handle call seller action
+      console.log("Calling seller...");
     }
   };
 
@@ -359,7 +374,10 @@ const SingleAdDetails = () => {
           </ScrollView>
 
           <View style={styles.bottomButtonContainer}>
-            <TouchableOpacity style={styles.callButton}>
+            <TouchableOpacity 
+              style={styles.callButton}
+              onPress={handleBottomButtonPress}
+            >
               <Text style={styles.callButtonText}>
                 {activeTab === "user" ? "Call Seller" : "Chat Now"}
               </Text>
