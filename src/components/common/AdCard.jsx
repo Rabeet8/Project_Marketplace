@@ -7,7 +7,7 @@ const AdCard = ({ ad, onPress }) => {
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
-            source={require('../../../assets/images/block.jpg')} // Replace with your image path
+            source={{ uri: ad.images[0].img_url }} // Replace with your image path
             style={styles.productImage}
           />
         </View>
