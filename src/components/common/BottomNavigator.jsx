@@ -21,10 +21,10 @@ const BottomNavigation = () => {
 
         <TouchableOpacity 
           style={styles.navItem} 
-          onPress={() => navigation.navigate('Search')}
+          onPress={() => navigation.navigate('MyAds')}
         >
           <MaterialCommunityIcons name="text-box-outline" size={24} color="#666" />
-          <Text style={styles.navText}>Search</Text>
+          <Text style={styles.navText}>My Ads</Text>
         </TouchableOpacity>
 
         <View style={styles.fabSpacer} />
@@ -44,9 +44,9 @@ const BottomNavigation = () => {
 
         <TouchableOpacity 
           style={[styles.navItem, styles.rightSideItem]} 
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.navigate('User')}
         >
-          <MaterialCommunityIcons name="dots-horizontal" size={24} color="#666" />
+          <MaterialCommunityIcons name="account-outline" size={24} color="#666" />
           <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>
       </View>

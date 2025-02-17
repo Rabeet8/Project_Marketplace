@@ -14,8 +14,8 @@ const Categories = () => {
   // Updated categories to match backend data structure
   const categories = [
     { category_id: 'all', type: 'All Items' },
-    { category_id: 10, type: 'LAPTOP' },
-    { category_id: 11, type: 'MOBILE' },
+    { category_id: 10, type: 'Laptop' },
+    { category_id: 11, type: 'Mobile' },
     { category_id: 12, type: 'Headphones' },
     { category_id: 13, type: 'Gaming' },
     { category_id: 14, type: 'Tablets' },

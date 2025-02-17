@@ -173,16 +173,26 @@ const AdUploadScreen = () => {
         throw new Error('Please add at least one image');
       }
   
+      // Add console log to debug
+      // console.log('Uploading images:', images);
+  
       // Upload all images to Firebase
       for (const imageUri of images) {
         try {
           const imageUrl = await uploadImageAsync(imageUri);
           uploadedImageUrls.push(imageUrl);
+          console.log('Successfully uploaded image:', imageUrl); // Debug log
         } catch (error) {
           console.error('Error uploading image:', error);
           throw new Error('Failed to upload images. Please try again.');
         }
       }
+  
+      // Add console log to debug
+      // console.log('All uploaded image URLs:', uploadedImageUrls);
+  
+      // Create a simpler timestamp format
+   
 
       const payload = {
         title,
@@ -194,25 +204,32 @@ const AdUploadScreen = () => {
         city,
         price: parseFloat(price),
         user_id: userData?.user_id, // Use the actual user_id
-        imageURLs: uploadedImageUrls, // Use the array of uploaded image URLs
+        imageURLs: uploadedImageUrls, // Changed from 'images' to 'imageURLs'
         timestamp: new Date().toISOString(),
-        prompt: "Analyze the condition of this product from the image and describe it without mentioning the product name. Keep it neutral, avoiding an advertisement tone. Focus on visible signs of use, functionality, and overall condition. Give a rating out of 10 based on your analysis. return response in format json with keys (rating, description).",
+        // comment kia hoa prompt use krienge abhi test finally
+        // prompt: "Analyze the condition of this product from the image and describe it without mentioning the product name. Keep it neutral, avoiding an advertisement tone. Focus on key aspects such as visible wear and tear, build quality, functionality, and overall condition. Structure the description into well-formatted, concise paragraphs to enhance readability. Maintain an objective tone, avoiding any promotional language. Assign a rating out of 10 based on your evaluation, considering durability, appearance, and usability. Return the response in JSON format with the following keys:{title: A concise title summarizing the products overall condition. description: A detailed, multi-paragraph analysis covering physical condition, usability, and any notable observations. rating: A numerical rating out of 10 based on the overall assessment.",
+        prompt : "Analyze the condition of this product from the image and describe it without mentioning the product name. Keep it neutral, avoiding an advertisement tone. Focus on visible signs of use, functionality, and overall condition. Give a rating out of 10 based on your analysis. return response in format json with keys (rating, description).",
         longitude: location.coords.longitude?.toString() || "0",
         latitude: location.coords.latitude?.toString() || "0",
       };
+
+      // Log the entire payload for debugging
+      console.log('Full payload being sent:', JSON.stringify(payload, null, 2));
 
       const response = await fetch(`${API_URL}/ads`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json', // Add this line
         },
         body: JSON.stringify(payload), 
       });
 
       const result = await response.json();
+      console.log('Server response:', result); // Add this debug log
       
       if (!response.ok) {
-        throw new Error(result.message || 'Failed to create ad');
+        throw new Error(result.message || `Failed to create ad: ${response.status}`);
       }
 
       setShowSuccessModal(true);
@@ -231,7 +248,7 @@ const AdUploadScreen = () => {
       }, 2000);
 
     } catch (error) {
-      console.error('Error submitting listing:', error);
+      console.error('Detailed error:', error); // More detailed error logging
       setErrorMessage(error.message || 'Something went wrong');
       setShowErrorModal(true);
       setTimeout(() => {
