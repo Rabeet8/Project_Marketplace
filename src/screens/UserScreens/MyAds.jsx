@@ -45,7 +45,7 @@ const MyAds = () => {
           {ads.map(ad => (
             <View key={ad.ad_id} style={styles.adCard}>
               <Image
-                source={{ uri: ad.image }}
+                source={{ uri: ad.images[0].img_url }}
                 style={styles.adImage}
               />
               <View style={styles.adContent}>

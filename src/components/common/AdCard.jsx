@@ -2,35 +2,49 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const AdCard = ({ ad, onPress }) => {
-  // Transform the images array to get just the URLs
-  const adImages = ad.images ? ad.images.map(img => img.img_url) : [];
-  
+  // Safely get image URL from different possible data structures
+  const getImageUrl = () => {
+    try {
+      // If imageURLs exists (from Firebase)
+      if (ad.imageURLs && ad.imageURLs.length > 0) {
+        return ad.imageURLs[0];
+      }
+      // If legacy images array exists
+      if (ad.images && ad.images.length > 0 && ad.images[0].img_url) {
+        return ad.images[0].img_url;
+      }
+      // Return default image if no valid image URL found
+      
+    } catch (error) {
+      console.warn('Error getting image URL:', error);
  
+    }
+  };
 
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: ad.images[0].img_url }} // Replace with your image path
+            source={{ uri: getImageUrl() }}
             style={styles.productImage}
           />
         </View>
         
         <View style={styles.productInfo}>
-          <Text style={styles.title}>{ad.title}</Text>
-          <Text style={styles.price}>Rs. {ad.price}</Text>
+          <Text style={styles.title} numberOfLines={2}>{ad.title || 'No title'}</Text>
+          <Text style={styles.price}>Rs. {ad.price?.toLocaleString() || '0'}</Text>
           
           <View style={styles.tagContainer}>
             <View style={styles.serviceTag}>
-              <Text style={styles.tagText}>{ad.category_name}</Text>
+              <Text style={styles.tagText}>{ad.category_name || 'Uncategorized'}</Text>
             </View>
           </View>
           
-          <Text style={styles.location}>{ad.city}</Text>
-          <Text style={styles.timeInfo}>{ad.timestamp}</Text>
-          <Text style={styles.model}>Model: {ad.model}</Text>
-          <Text style={styles.rating}>Rating: {ad.rating}</Text>
+          <Text style={styles.location}>{ad.city || 'Location not specified'}</Text>
+          <Text style={styles.timeInfo}>{ad.timestamp || 'Time not specified'}</Text>
+          <Text style={styles.model}>Model: {ad.model || 'Not specified'}</Text>
+          <Text style={styles.rating}>Rating: {ad.rating || 'Not rated'}</Text>
           
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.featuredButton}>

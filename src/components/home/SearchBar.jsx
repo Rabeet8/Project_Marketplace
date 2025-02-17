@@ -1,8 +1,22 @@
-import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const SearchBar = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const navigation = useNavigation();
+
+    const handleSearch = () => {
+        if (searchQuery.trim()) {
+            navigation.navigate('AdsListings', {
+                isSearch: true,
+                searchQuery: searchQuery.trim()
+            });
+            setSearchQuery(''); // Clear search after submitting
+        }
+    };
+
     return (
         <View style={styles.searchContainer}>
             <Ionicons name="search" size={20} color="#0D2C54" style={styles.icon} />
@@ -10,6 +24,10 @@ const SearchBar = () => {
                 style={styles.input}
                 placeholder="Search"
                 placeholderTextColor="#A0A0A0"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                onSubmitEditing={handleSearch}
+                returnKeyType="search"
             />
         </View>
     );
