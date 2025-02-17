@@ -21,12 +21,12 @@ export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [f_name, setF_name] = useState("");
+  const [l_name, setL_name] = useState("");
+  const [phone_no, setPhone_no] = useState("");
   const [gender, setGender] = useState("");
   const [city, setCity] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [date_of_birth, setDate_of_birth] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -85,7 +85,7 @@ export default function SignUpScreen({ navigation }) {
   );
 
   const handleSignUp = () => {
-    if (!email || !password || !confirmPassword || !firstName || !lastName || !phoneNumber || !gender || !city || !dateOfBirth) {
+    if (!email || !password || !confirmPassword || !f_name || !l_name || !phone_no || !gender || !city || !date_of_birth) {
       setError("All fields are required");
       return;
     }
@@ -103,16 +103,16 @@ export default function SignUpScreen({ navigation }) {
           .then(() => {
             console.log("Email verification sent");
             const userData = {
-              uid: userCredential.user.uid,
-              firstName,
-              lastName,
+              f_name,
+              l_name,
               email,
-              phoneNumber,
+              phone_no,
               gender,
               city,
-              dateOfBirth,
+              date_of_birth,
+              FUID: userCredential.user.uid,
             };
-            fetch(`${BASE_URL}users`, {
+            fetch(`${BASE_URL}/users`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -185,22 +185,22 @@ export default function SignUpScreen({ navigation }) {
             <TextInput
               style={styles.input}
               placeholder="First Name"
-              value={firstName}
-              onChangeText={setFirstName}
+              value={f_name}
+              onChangeText={setF_name}
               placeholderTextColor="#999"
             />
             <TextInput
               style={styles.input}
               placeholder="Last Name"
-              value={lastName}
-              onChangeText={setLastName}
+              value={l_name}
+              onChangeText={setL_name}
               placeholderTextColor="#999"
             />
             <TextInput
               style={styles.input}
               placeholder="Phone Number"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
+              value={phone_no}
+              onChangeText={setPhone_no}
               keyboardType="phone-pad"
               placeholderTextColor="#999"
             />
@@ -225,8 +225,8 @@ export default function SignUpScreen({ navigation }) {
             <TextInput
               style={styles.input}
               placeholder="Date of Birth (YYYY-MM-DD)"
-              value={dateOfBirth}
-              onChangeText={setDateOfBirth}
+              value={date_of_birth}
+              onChangeText={setDate_of_birth}
               placeholderTextColor="#999"
             />
             <TextInput
