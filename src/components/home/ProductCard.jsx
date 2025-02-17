@@ -63,6 +63,7 @@ const ProductList = () => {
 
 const ProductCard = ({ ad }) => {
   const navigation = useNavigation();
+  const adImages = ad.images ? ad.images.map(img => img.img_url) : [];
 
   const handleAdPress = (ad) => {
     navigation.navigate('SingleAdDetails', { ad });
@@ -74,18 +75,29 @@ const ProductCard = ({ ad }) => {
         style={styles.imageContainer}
         onPress={() => handleAdPress(ad)}
       >
-        <Image source={require('../../../assets/images/block.jpg')} style={styles.image} resizeMode="cover" />
-        {ad.isFeatured && (
-          <View style={styles.featuredBadge}>
-            <Text style={styles.featuredText}>Featured</Text>
+        {adImages.length > 0 ? (
+          <Image 
+            source={{ uri: adImages[0] }} 
+            style={styles.image} 
+            resizeMode="cover" 
+          />
+        ) : (
+          <View style={[styles.image, styles.noImage]}>
+            <Text>No Image</Text>
           </View>
         )}
       </TouchableOpacity>
 
       <View style={styles.contentContainer}>
-        <Text style={styles.title} numberOfLines={1}>
-          {ad.title}
-        </Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title} numberOfLines={1}>
+            {ad.title}
+          </Text>
+          <View style={styles.serviceTag}>
+            <Text style={styles.tagText}>{ad.category_name}</Text>
+          </View>
+        </View>
+        
         <Text style={styles.price}>Rs. {ad.price.toLocaleString()}</Text>
 
         <View style={styles.footer}>
@@ -150,21 +162,44 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 12,
   },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   title: {
     fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 4,
+    fontWeight: '600',
+    color: '#0D2C54',
+    flex: 1,
+    marginRight: 8,
+  },
+  serviceTag: {
+    backgroundColor: '#0D2C54',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 16,
+  },
+  tagText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
   },
   price: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#ff4444",
+    fontWeight: '700',
+    color: '#0D2C54', // Changed to blue
     marginBottom: 8,
   },
   footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
   },
   location: {
     fontSize: 12,
@@ -186,6 +221,11 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
+  },
+  noImage: {
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

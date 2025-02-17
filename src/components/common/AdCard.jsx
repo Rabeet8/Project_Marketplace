@@ -2,14 +2,25 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const AdCard = ({ ad, onPress }) => {
+  // Transform the images array to get just the URLs
+  const adImages = ad.images ? ad.images.map(img => img.img_url) : [];
+  
+ 
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
-          <Image
-            source={require('../../../assets/images/block.jpg')} // Replace with your image path
-            style={styles.productImage}
-          />
+          {adImages.length > 0 ? (
+            <Image
+              source={{ uri: adImages[0] }}
+              style={styles.productImage}
+            />
+          ) : (
+            <View style={[styles.productImage, styles.noImage]}>
+              <Text>No Image</Text>
+            </View>
+          )}
         </View>
         
         <View style={styles.productInfo}>
@@ -144,6 +155,11 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     fontSize: 14,
+  },
+  noImage: {
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
