@@ -15,6 +15,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import logo from "../../assets/images/snapTrade.png";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from "@/app/environment";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -23,29 +25,76 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = () => {
+  const fetchUserDetails = async (FUID) => {
+    try {
+      const response = await fetch(`${BASE_URL}/usersLogin/${FUID}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user details');
+      }
+      const userData = await response.json();
+      
+      // Store user data in AsyncStorage for global access
+      await AsyncStorage.setItem('userData', JSON.stringify({
+        user_id: userData.user_id,
+        f_name: userData.f_name,
+        l_name: userData.l_name,
+        email: userData.email,
+        phone_no: userData.phone_no,
+        city: userData.city,
+        FUID: userData.FUID
+      }));
+
+      return userData;
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      throw error;
+    }
+  };
+
+  const handleLogin = async () => {
     if (!email || !password) {
       setError("All fields are required");
       return;
     }
+    
     setLoading(true);
     setError("");
-    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
-      .then(userCredential => {
-        console.log("User logged in successfully");
-        console.log("User email:", userCredential.user.email); 
-        setLoading(false);
-        navigation.navigate("Home", { message: "Logged in successfully" }); // Navigate to Home with success message
-      })
-      .catch(error => {
-        console.error("Error logging in:", error);
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-          setError("Invalid email or password");
-        } else {
-          setError("Error logging in. Please try again.");
-        }
-        setLoading(false);
+
+    try {
+      // First, authenticate with Firebase
+      const userCredential = await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      console.log("User logged in successfully");
+      
+      // Then fetch user details from your backend
+      const userData = await fetchUserDetails(userCredential.user.uid);
+      console.log("User details fetched:", {
+        user_id: userData.user_id,
+        name: `${userData.f_name} ${userData.l_name}`,
+        email: userData.email,
+        FUID: userData.FUID
       });
+
+      setLoading(false);
+      navigation.reset({
+        index: 0,
+        routes: [{ 
+          name: "Home", 
+          params: { 
+            message: "Logged in successfully",
+            userData: userData 
+          } 
+        }],
+      });
+    } catch (error) {
+      console.error("Error in login process:", error);
+      setLoading(false);
+      
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        setError("Invalid email or password");
+      } else {
+        setError("Error logging in. Please try again.");
+      }
+    }
   };
 
   return (

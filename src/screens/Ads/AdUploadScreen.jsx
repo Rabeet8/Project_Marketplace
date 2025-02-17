@@ -17,10 +17,12 @@ import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 
 import {uploadImageAsync} from './utility.js';
+import { useUser } from '../../hooks/useUser.jsx';
 
 const API_URL = 'https://cartkro.azurewebsites.net/';
 
-const AdUploadScreenCOPY = () => {
+const AdUploadScreen = () => {
+  const { userData } = useUser();
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -201,7 +203,7 @@ const AdUploadScreenCOPY = () => {
         rating: parseInt(rating),
         city,
         price: parseFloat(price),
-        user_id: 8, // Replace with actual user ID
+        user_id: userData?.user_id, // Use the actual user_id
         imageURLs: uploadedImageUrls, // Changed from 'images' to 'imageURLs'
         timestamp: new Date().toISOString(),
         // comment kia hoa prompt use krienge abhi test finally
@@ -819,4 +821,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdUploadScreenCOPY;
+export default AdUploadScreen;
