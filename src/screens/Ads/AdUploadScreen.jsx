@@ -17,10 +17,12 @@ import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 
 import {uploadImageAsync} from './utility.js';
+import { useUser } from '../../hooks/useUser.jsx';
 
 const API_URL = 'https://cartkro.azurewebsites.net/';
 
-const AdUploadScreenCOPY = () => {
+const AdUploadScreen = () => {
+  const { userData } = useUser();
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -191,7 +193,7 @@ const AdUploadScreenCOPY = () => {
         rating: parseInt(rating),
         city,
         price: parseFloat(price),
-        user_id: 8, // Replace with actual user ID
+        user_id: userData?.user_id, // Use the actual user_id
         imageURLs: uploadedImageUrls, // Use the array of uploaded image URLs
         timestamp: new Date().toISOString(),
         prompt: "Analyze the condition of this product from the image and describe it without mentioning the product name. Keep it neutral, avoiding an advertisement tone. Focus on visible signs of use, functionality, and overall condition. Give a rating out of 10 based on your analysis. return response in format json with keys (rating, description).",
@@ -802,4 +804,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdUploadScreenCOPY;
+export default AdUploadScreen;
