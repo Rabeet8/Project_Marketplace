@@ -12,6 +12,8 @@ import SignupScreen from "../src/screens/SignupScreen";
 import AdsListings from "../src/screens/Ads/AdsListings";
 import AdUploadScreen from "../src/screens/Ads/AdUploadScreen";
 import User from "../src/screens/UserScreens/User"
+import MyAds from "../src/screens/UserScreens/MyAds.jsx";
+
 // import AdUploadScreenCopy from "../src/screens/Ads/AdUploadScreenCOPY.jsx"
 // import ChatScreen from "../src/screens/ChatScreen.jsx"
 
@@ -77,6 +79,12 @@ export default function App() {
           <Stack.Screen
             name="User"
             component={User}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="MyAds"
+            component={MyAds}
             options={{ headerShown: false }}
           />
             {/* <Stack.Screen
