@@ -1,34 +1,49 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions } from 'react-native';
-
-const DUMMY_ADS = [
-  {
-    id: 1,
-    title: 'iPhone 13 Pro Max',
-    description: 'Perfect condition iPhone 13 Pro Max, 256GB storage, Pacific Blue color. Comes with original box and accessories. Battery health 95%, no scratches or dents.',
-    price: 'PKR 250,000',
-    image: 'https://placehold.co/100x100'
-  },
-  {
-    id: 2,
-    title: 'Sony PlayStation 5',
-    description: 'Brand new PS5 disc edition with extra controller. Still sealed in box. Warranty card included. Available for immediate pickup.',
-    price: 'PKR 175,000',
-    image: 'https://placehold.co/100x100'
-  },
-];
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { useUser } from '../../hooks/useUser';
+import { BASE_URL } from '@/app/environment';
 
 const MyAds = () => {
+  const { userData } = useUser();
+  const [ads, setAds] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserAds = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/ads/user?user_id=${userData.user_id}`);
+        const data = await response.json();
+        setAds(data);
+      } catch (error) {
+        console.error('Error fetching user ads:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userData?.user_id) {
+      fetchUserAds();
+    }
+  }, [userData]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0D2C54" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Ads</Text>
       </View>
       
-      {DUMMY_ADS.length > 0 ? (
+      {ads.length > 0 ? (
         <View style={styles.adsContainer}>
-          {DUMMY_ADS.map(ad => (
-            <View key={ad.id} style={styles.adCard}>
+          {ads.map(ad => (
+            <View key={ad.ad_id} style={styles.adCard}>
               <Image
                 source={{ uri: ad.image }}
                 style={styles.adImage}
@@ -56,6 +71,12 @@ const MyAds = () => {
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
