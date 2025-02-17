@@ -50,7 +50,7 @@ const MyAds = () => {
               />
               <View style={styles.adContent}>
                 <Text style={styles.adTitle}>{ad.title}</Text>
-                <Text  
+                <Text
                   numberOfLines={3} 
                   style={styles.adDescription}
                 >
