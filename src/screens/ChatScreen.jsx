@@ -100,17 +100,16 @@ const ChatScreen = () => {
     fetchMessages();
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#0D2C54" />
-      </View>
-    );
-  }
+  const renderMessages = () => {
+    if (loading) {
+      return (
+        <View style={styles.chatLoaderContainer}>
+          <ActivityIndicator size="large" color="#0D2C54" />
+        </View>
+      );
+    }
 
-  return (
-    <View style={styles.container}>
-      <Header title="Chat" />
+    return (
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
@@ -126,6 +125,13 @@ const ChatScreen = () => {
           />
         }
       />
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <Header title="Chat" />
+      {renderMessages()}
     </View>
   );
 };
@@ -156,6 +162,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#e8e8e8',
     padding: 5,
+  },
+  chatLoaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
   },
 });
 

@@ -35,9 +35,6 @@ const BottomNavigation = () => {
         >
           <View style={styles.chatIconContainer}>
             <MaterialCommunityIcons name="message-outline" size={24} color="#666" />
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>2</Text>
-            </View>
           </View>
           <Text style={styles.navText}>Chats</Text>
         </TouchableOpacity>

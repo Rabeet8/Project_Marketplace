@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/common/Header';
 import BottomNavigation from '../components/common/BottomNavigator';
@@ -8,6 +8,7 @@ import { useUser } from '../hooks/useUser';
 
 const MessagesComponent = () => {
   const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigation = useNavigation();
   const { userData } = useUser();
 
@@ -25,6 +26,8 @@ const MessagesComponent = () => {
         setChats(data.chats);
       } catch (error) {
         console.error('Error fetching chats:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -62,18 +65,32 @@ const MessagesComponent = () => {
     </TouchableOpacity>
   );
 
-  return (
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Messages</Text>
-      </View>
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#0D2C54" />
+        </View>
+      );
+    }
+
+    return (
       <FlatList
         data={chats}
         keyExtractor={(item) => item.receiver_id.toString()}
         renderItem={renderChatItem}
         ListEmptyComponent={<Text style={styles.emptyText}>No chats available</Text>}
       />
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <Header />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Messages</Text>
+      </View>
+      {renderContent()}
       <BottomNavigation />
     </View>
   );
@@ -181,6 +198,13 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
     letterSpacing: 0.5,
     lineHeight: 24,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F8F9FA',
+    paddingVertical: 20,
   },
 });
 

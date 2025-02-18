@@ -69,21 +69,24 @@ const AdsListings = () => {
         );
     };
 
-    if (loading || isSearching) {
-        return <ActivityIndicator size="large" color="#0D2C54" style={styles.loadingIndicator} />;
-    }
+    const renderContent = () => {
+        if (loading || isSearching) {
+            return (
+                <View style={styles.contentLoaderContainer}>
+                    <ActivityIndicator size="large" color="#0D2C54" />
+                </View>
+            );
+        }
 
-    if (error) {
+        if (error) {
+            return (
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>Error fetching ads</Text>
+                </View>
+            );
+        }
+
         return (
-            <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>Error fetching ads</Text>
-            </View>
-        );
-    }
-
-    return (
-        <View style={styles.container}>
-            <Header />
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 <Text style={styles.heading}>
                     {isSearch 
@@ -108,6 +111,13 @@ const AdsListings = () => {
                     </View>
                 )}
             </ScrollView>
+        );
+    };
+
+    return (
+        <View style={styles.container}>
+            <Header />
+            {renderContent()}
             <BottomNavigation />
         </View>
     );
@@ -155,6 +165,12 @@ const styles = StyleSheet.create({
     },
     adsContainer: {
         padding: 8,
+    },
+    contentLoaderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
     },
 });
 

@@ -395,7 +395,6 @@ const AdUploadScreen = () => {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.scrollContent} // Add this line
     >
-    <Header />
       <SuccessModal />
       <ErrorModal />
       <LoadingModal />
@@ -536,7 +535,6 @@ const AdUploadScreen = () => {
       >
         <Text style={styles.submitButtonText}>Submit Listing</Text>
       </TouchableOpacity>
-      <BottomNavigation />
     </ScrollView>
   );
 };
