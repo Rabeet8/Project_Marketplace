@@ -126,6 +126,58 @@ const SingleAdDetails = () => {
   });
 };
 
+  // Add validation check for ad data
+  if (!ad) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Ad data is missing</Text>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+        <BottomNavigator />
+      </SafeAreaView>
+    );
+  }
+
+  if (!ad.user) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>User details are missing</Text>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+        <BottomNavigator />
+      </SafeAreaView>
+    );
+  }
+
+  // Update the user info section with null checks
+  const renderUserInfo = () => (
+    <View style={styles.userInfo}>
+      <Image source={profile} style={styles.profileImage} />
+      <View style={styles.userDetails}>
+        <Text style={styles.username}>
+          {ad.user?.f_name || 'Unknown User'}
+        </Text>
+      </View>
+      <Text style={styles.serviceBadge}>
+        {ad.category_name || 'Uncategorized'}
+      </Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
     <Header/>
@@ -205,14 +257,7 @@ const SingleAdDetails = () => {
                   )}
                 </View>
                 <View style={styles.contentContainer}>
-                  <View style={styles.userInfo}>
-                    <Image source={profile} style={styles.profileImage} />
-                    <View style={styles.userDetails}>
-                      <Text style={styles.username}>{ad.user.f_name}</Text>
-                    </View>
-                    <Text style={styles.serviceBadge}>{ad.category_name}</Text>
-                  </View>
-
+                  {renderUserInfo()}
                   <View style={styles.infoSection}>
                     <View style={styles.detailRow}>
                       <Text style={styles.detailLabel}>Location</Text>
@@ -432,6 +477,34 @@ const SingleAdDetails = () => {
     </SafeAreaView>
   );
 };
+
+// Add these new styles
+const additionalStyles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  backButton: {
+    backgroundColor: '#0D2C54',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
 
 const styles = StyleSheet.create({
   container: {

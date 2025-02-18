@@ -4,8 +4,11 @@ import { useUser } from '../../hooks/useUser';
 import { BASE_URL } from '@/app/environment';
 import Header from '@/src/components/common/Header';
 import BottomNavigation from '@/src/components/common/BottomNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
 
 const MyAds = () => {
+  const navigation = useNavigation();
   const { userData } = useUser();
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +18,19 @@ const MyAds = () => {
       try {
         const response = await fetch(`${BASE_URL}/ads/user?user_id=${userData.user_id}`);
         const data = await response.json();
-        setAds(data);
+        
+        // Add user details to each ad
+        const adsWithUserDetails = data.map(ad => ({
+          ...ad,
+          user: {
+            user_id: userData.user_id,
+            f_name: userData.f_name,
+            // Add other user fields as needed
+          }
+        }));
+        
+        console.log('Ads with user details:', adsWithUserDetails); // Debug log
+        setAds(adsWithUserDetails);
       } catch (error) {
         console.error('Error fetching user ads:', error);
       } finally {
@@ -36,6 +51,20 @@ const MyAds = () => {
     );
   }
 
+  const handleAdPress = (ad) => {
+    console.log('Ad being passed to SingleAdDetails:', ad); // Debug log
+    navigation.navigate('SingleAdDetails', { 
+      ad: {
+        ...ad,
+        user: {
+          user_id: userData.user_id,
+          f_name: userData.f_name,
+          // Add other user fields as needed
+        }
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Header />
@@ -45,7 +74,12 @@ const MyAds = () => {
       <ScrollView contentContainerStyle={styles.adsContainer}>
         {ads.length > 0 ? (
           ads.map(ad => (
-            <View key={ad.ad_id} style={styles.adCard}>
+            <TouchableOpacity 
+              key={ad.ad_id} 
+              style={styles.adCard}
+              onPress={() => handleAdPress(ad)}
+              activeOpacity={0.7}
+            >
               <Image
                 source={{ uri: ad.images[0].img_url }}
                 style={styles.adImage}
@@ -58,9 +92,9 @@ const MyAds = () => {
                 >
                   {ad.description}
                 </Text>
-                <Text style={styles.adPrice}>{ad.price}</Text>
+                <Text style={styles.adPrice}>Rs. {ad.price}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))
         ) : (
           <View style={styles.emptyContainer}>
