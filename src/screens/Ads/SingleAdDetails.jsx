@@ -12,22 +12,24 @@ import {
 import { useRoute, useNavigation } from "@react-navigation/native";
 import logo1 from "../../../assets/images/logo1.png";
 import profile from "../../../assets/images/profile.png";
-
 import aiLogo from "../../../assets/images/ai-logo.png";
 import BottomNavigator from "../../components/common/BottomNavigator";
+import { useUser } from "../../hooks/useUser";
+import Header from "@/src/components/common/Header";
 
 const SingleAdDetails = () => {
+  const {userData} = useUser();
   const route = useRoute();
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   const { ad, aiData } = route.params;
-  
+
   // Add debug logs to check the data
   console.log('Full ad object:', ad);
   console.log('Raw timestamp:', ad.timestamp);
-  
+
   // Transform the images array to get just the URLs
   const carouselImages = ad.images ? ad.images.map(img => img.img_url) : [];
-  
+
   // Add debug log to verify the transformation
   console.log('Original images:', ad.images);
   console.log('Transformed carousel images:', carouselImages);
@@ -37,23 +39,6 @@ const SingleAdDetails = () => {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
-
-  useEffect(() => {
-    fetchCategoryName();
-  }, []);
-
-  const fetchCategoryName = async () => {
-    try {
-      const response = await fetch(`${API_URL}/categories`);
-      const categories = await response.json();
-      const category = categories.find(([id]) => id.toString() === ad.category_id.toString());
-      if (category) {
-        setCategoryName(category[1]); // category[1] contains the name
-      }
-    } catch (error) {
-      console.error('Error fetching category:', error);
-    }
-  };
 
   const [activeTab, setActiveTab] = useState("user");
   const [modalVisible, setModalVisible] = useState(false);
@@ -132,22 +117,18 @@ const SingleAdDetails = () => {
     }
   };
 
-  const handleBottomButtonPress = () => {
-    if (activeTab === "ai") {
-      navigation.navigate('ChatScreen', {
-        userId: 1,  // Static user ID
-        userName: "Seller",  // Static seller name
-        adId: 1,    // Static ad ID
-        adTitle: "Product"  // Static product title
-      });
-    } else {
-      // Handle call seller action
-      console.log("Calling seller...");
-    }
-  };
+ const handleBottomButtonPress = () => {
+  navigation.navigate('ChatScreen', {
+    sender_id: userData.user_id,  // User ID of the logged in user
+    receiver_id: ad.user.user_id,  // User ID of the ad poster
+    adId: ad.ad_id,    // Ad ID
+    adTitle: ad.title  // Ad title
+  });
+};
 
   return (
     <SafeAreaView style={styles.container}>
+    <Header/>
       <View style={styles.mainContainer}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.tabContainer}>
@@ -379,7 +360,7 @@ const SingleAdDetails = () => {
               onPress={handleBottomButtonPress}
             >
               <Text style={styles.callButtonText}>
-                {activeTab === "user" ? "Call Seller" : "Chat Now"}
+                {activeTab === "user" ? "Chat Now" : "Chat Now"}
               </Text>
             </TouchableOpacity>
           </View>

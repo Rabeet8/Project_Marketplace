@@ -18,6 +18,8 @@ import * as Location from 'expo-location';
 
 import {uploadImageAsync} from './utility.js';
 import { useUser } from '../../hooks/useUser.jsx';
+import Header from '@/src/components/common/Header.jsx';
+import BottomNavigation from '@/src/components/common/BottomNavigator.jsx';
 
 const API_URL = 'https://cartkro.azurewebsites.net/';
 
@@ -393,6 +395,7 @@ const AdUploadScreen = () => {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.scrollContent} // Add this line
     >
+    <Header />
       <SuccessModal />
       <ErrorModal />
       <LoadingModal />
@@ -533,6 +536,7 @@ const AdUploadScreen = () => {
       >
         <Text style={styles.submitButtonText}>Submit Listing</Text>
       </TouchableOpacity>
+      <BottomNavigation />
     </ScrollView>
   );
 };

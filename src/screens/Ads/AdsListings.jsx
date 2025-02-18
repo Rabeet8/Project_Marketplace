@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-nat
 import { useNavigation, useRoute } from '@react-navigation/native';
 import useFetchAds from '../../hooks/useFetchAds';
 import AdCard from '../../components/common/AdCard';
+import Header from '@/src/components/common/Header';
+import BottomNavigation from '@/src/components/common/BottomNavigator';
 
 const AdsListings = () => {
     const navigation = useNavigation();
@@ -80,30 +82,34 @@ const AdsListings = () => {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.heading}>
-                {isSearch 
-                    ? `Search Results: ${searchQuery}`
-                    : categoryName === 'All Items' 
-                        ? 'All Items' 
-                        : `${categoryName} Items`
-                }
-            </Text>
+        <View style={styles.container}>
+            <Header />
+            <ScrollView contentContainerStyle={styles.contentContainer}>
+                <Text style={styles.heading}>
+                    {isSearch 
+                        ? `Search Results: ${searchQuery}`
+                        : categoryName === 'All Items' 
+                            ? 'All Items' 
+                            : `${categoryName} Items`
+                    }
+                </Text>
 
-            {filteredAds.length === 0 ? (
-                <View style={styles.noAdsContainer}>
-                    <Text style={styles.noAdsText}>
-                        {isSearch ? 'No results found' : 'No ads available'}
-                    </Text>
-                </View>
-            ) : (
-                <View style={styles.adsContainer}>
-                    {filteredAds
-                        .filter(ad => ad !== undefined && ad !== null)
-                        .map((ad, index) => renderAdCard(ad, index))}
-                </View>
-            )}
-        </ScrollView>
+                {filteredAds.length === 0 ? (
+                    <View style={styles.noAdsContainer}>
+                        <Text style={styles.noAdsText}>
+                            {isSearch ? 'No results found' : 'No ads available'}
+                        </Text>
+                    </View>
+                ) : (
+                    <View style={styles.adsContainer}>
+                        {filteredAds
+                            .filter(ad => ad !== undefined && ad !== null)
+                            .map((ad, index) => renderAdCard(ad, index))}
+                    </View>
+                )}
+            </ScrollView>
+            <BottomNavigation />
+        </View>
     );
 };
 
@@ -111,6 +117,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
+    },
+    contentContainer: {
+        flexGrow: 1,
+        paddingBottom: 60, // Ensure content does not overlap with BottomNavigation
     },
     heading: {
         fontSize: 24,

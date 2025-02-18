@@ -13,6 +13,7 @@ import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../../firebaseConfig';
 import BottomNavigation from '../../components/common/BottomNavigator';
 import { useUser } from '../../hooks/useUser';
+import Header from '@/src/components/common/Header';
 
 const PRIMARY_COLOR = '#0D2C54';
 
@@ -43,6 +44,7 @@ const UserProfile = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+    <Header/>
       <View style={styles.mainContainer}>
         <View style={styles.header}>
           <TouchableOpacity 
@@ -84,11 +86,6 @@ const UserProfile = ({ navigation }) => {
                 <View style={styles.infoItem}>
                   <Text style={styles.label}>City</Text>
                   <Text style={styles.value}>{userData?.city || 'Not set'}</Text>
-                </View>
-
-                <View style={styles.infoItem}>
-                  <Text style={styles.label}>User ID</Text>
-                  <Text style={styles.value}>{userData?.user_id || 'Not set'}</Text>
                 </View>
               </View>
             </View>

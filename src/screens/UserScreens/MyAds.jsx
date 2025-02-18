@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { useUser } from '../../hooks/useUser';
 import { BASE_URL } from '@/app/environment';
+import Header from '@/src/components/common/Header';
+import BottomNavigation from '@/src/components/common/BottomNavigator';
 
 const MyAds = () => {
   const { userData } = useUser();
@@ -35,14 +37,14 @@ const MyAds = () => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <Header />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Ads</Text>
       </View>
-      
-      {ads.length > 0 ? (
-        <View style={styles.adsContainer}>
-          {ads.map(ad => (
+      <ScrollView contentContainerStyle={styles.adsContainer}>
+        {ads.length > 0 ? (
+          ads.map(ad => (
             <View key={ad.ad_id} style={styles.adCard}>
               <Image
                 source={{ uri: ad.images[0].img_url }}
@@ -59,14 +61,15 @@ const MyAds = () => {
                 <Text style={styles.adPrice}>{ad.price}</Text>
               </View>
             </View>
-          ))}
-        </View>
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No ads posted yet</Text>
-        </View>
-      )}
-    </ScrollView>
+          ))
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No ads posted yet</Text>
+          </View>
+        )}
+      </ScrollView>
+      <BottomNavigation />
+    </View>
   );
 };
 

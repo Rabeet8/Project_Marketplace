@@ -1,7 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useUser } from '../../hooks/useUser';
 
 const AdCard = ({ ad, onPress }) => {
+  const navigation = useNavigation();
+  const { userData } = useUser();
+
+  const handleChatPress = () => {
+    navigation.navigate('ChatScreen', {
+      sender_id: userData.user_id,    // Current user's ID
+      receiver_id: ad.user.user_id,   // Ad poster's ID
+      adId: ad.ad_id,                 // Ad ID
+      adTitle: ad.title               // Ad title
+    });
+  };
+
   // Safely get image URL from different possible data structures
   const getImageUrl = () => {
     try {
@@ -47,11 +61,11 @@ const AdCard = ({ ad, onPress }) => {
           <Text style={styles.rating}>Rating: {ad.rating || 'Not rated'}</Text>
           
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.featuredButton}>
-              <Text style={styles.featuredButtonText}>Whatsapp</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.publishButton}>
-              <Text style={styles.publishButtonText}>Call</Text>
+            <TouchableOpacity 
+              style={styles.featuredButton}
+              onPress={handleChatPress}
+            >
+              <Text style={styles.featuredButtonText}>Chat Now</Text>
             </TouchableOpacity>
           </View>
         </View>
