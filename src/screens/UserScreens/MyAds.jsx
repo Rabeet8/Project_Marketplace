@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  Image, 
+  ActivityIndicator,
+  Alert,
+  Modal,
+  TouchableOpacity
+} from 'react-native';
 import { useUser } from '../../hooks/useUser';
 import { BASE_URL } from '@/app/environment';
 import Header from '@/src/components/common/Header';
 import BottomNavigation from '@/src/components/common/BottomNavigator';
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native';
+import { MoreVertical, Trash2 } from 'lucide-react-native'; // Import icons
 
 const MyAds = () => {
   const navigation = useNavigation();
   const { userData } = useUser();
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAd, setSelectedAd] = useState(null);
+  const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
     const fetchUserAds = async () => {
@@ -65,6 +77,70 @@ const MyAds = () => {
     });
   };
 
+  // Add delete handler
+  const handleDelete = async (adId) => {
+    Alert.alert(
+      "Delete Ad",
+      "Are you sure you want to delete this ad?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const response = await fetch(`${BASE_URL}/ads/${adId}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              });
+
+              if (response.ok) {
+                // Remove the ad from local state
+                setAds(prevAds => prevAds.filter(ad => ad.ad_id !== adId));
+                setShowOptions(false);
+              } else {
+                throw new Error('Failed to delete ad');
+              }
+            } catch (error) {
+              console.error('Error deleting ad:', error);
+              Alert.alert('Error', 'Failed to delete the ad');
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  // Options Modal Component
+  const OptionsModal = () => (
+    <Modal
+      transparent={true}
+      visible={showOptions}
+      onRequestClose={() => setShowOptions(false)}
+    >
+      <TouchableOpacity 
+        style={styles.modalOverlay}
+        activeOpacity={1} 
+        onPress={() => setShowOptions(false)}
+      >
+        <View style={styles.modalContent}>
+          <TouchableOpacity 
+            style={styles.modalOption}
+            onPress={() => handleDelete(selectedAd?.ad_id)}
+          >
+            <Trash2 color="#FF4444" size={20} />
+            <Text style={styles.deleteText}>Delete Ad</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+
   return (
     <View style={styles.container}>
       <Header />
@@ -74,27 +150,34 @@ const MyAds = () => {
       <ScrollView contentContainerStyle={styles.adsContainer}>
         {ads.length > 0 ? (
           ads.map(ad => (
-            <TouchableOpacity 
-              key={ad.ad_id} 
-              style={styles.adCard}
-              onPress={() => handleAdPress(ad)}
-              activeOpacity={0.7}
-            >
-              <Image
-                source={{ uri: ad.images[0].img_url }}
-                style={styles.adImage}
-              />
-              <View style={styles.adContent}>
-                <Text style={styles.adTitle}>{ad.title}</Text>
-                <Text
-                  numberOfLines={3} 
-                  style={styles.adDescription}
-                >
-                  {ad.description}
-                </Text>
-                <Text style={styles.adPrice}>Rs. {ad.price}</Text>
-              </View>
-            </TouchableOpacity>
+            <View key={ad.ad_id} style={styles.adCard}>
+              <TouchableOpacity 
+                style={styles.adContent}
+                onPress={() => handleAdPress(ad)}
+                activeOpacity={0.7}
+              >
+                <Image
+                  source={{ uri: ad.images[0].img_url }}
+                  style={styles.adImage}
+                />
+                <View style={styles.adDetails}>
+                  <Text style={styles.adTitle}>{ad.title}</Text>
+                  <Text numberOfLines={3} style={styles.adDescription}>
+                    {ad.description}
+                  </Text>
+                  <Text style={styles.adPrice}>Rs. {ad.price}</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.optionsButton}
+                onPress={() => {
+                  setSelectedAd(ad);
+                  setShowOptions(true);
+                }}
+              >
+                <MoreVertical color="#666" size={24} />
+              </TouchableOpacity>
+            </View>
           ))
         ) : (
           <View style={styles.emptyContainer}>
@@ -102,6 +185,7 @@ const MyAds = () => {
           </View>
         )}
       </ScrollView>
+      <OptionsModal />
       <BottomNavigation />
     </View>
   );
@@ -133,6 +217,7 @@ const styles = StyleSheet.create({
   },
   adCard: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
     borderRadius: 8,
     backgroundColor: '#fff',
@@ -146,16 +231,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  adContent: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  adDetails: {
+    flex: 1,
+    marginLeft: 12,
+  },
   adImage: {
     width: 100,
     height: 100,
     borderRadius: 8,
     backgroundColor: '#f0f0f0',
-  },
-  adContent: {
-    flex: 1,
-    marginLeft: 12,
-    justifyContent: 'space-between',
   },
   adTitle: {
     fontSize: 18,
@@ -173,6 +261,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#2E8B57',
+  },
+  optionsButton: {
+    padding: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    width: '80%',
+    maxWidth: 300,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+  },
+  deleteText: {
+    color: '#FF4444',
+    fontSize: 16,
+    marginLeft: 12,
+    fontWeight: '500',
   },
   emptyContainer: {
     flex: 1,
